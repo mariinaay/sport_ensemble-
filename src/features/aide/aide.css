@@ -1,0 +1,56 @@
+/* Styles de la page Aide & contact. */
+
+/* ---------- Questions fréquentes ---------- */
+.faq {
+  margin-bottom: var(--espace-6);
+  overflow: hidden;
+  border-radius: var(--rayon-moyen);
+  background: var(--couleur-surface);
+}
+
+.faq__item + .faq__item {
+  border-top: 1px solid var(--couleur-bordure);
+}
+
+/* La question : une ligne cliquable avec un + à droite */
+.faq__item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espace-3);
+  min-height: var(--hauteur-cible);
+  padding: var(--espace-3) var(--espace-4);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none; /* enlève le petit triangle du navigateur */
+}
+.faq__item summary::-webkit-details-marker {
+  display: none;
+}
+.faq__item summary::after {
+  content: '+' / ''; /* « / '' » : le + n'est pas lu par les lecteurs d'écran */
+  color: var(--couleur-primaire);
+  font-size: var(--taille-titre-2);
+  line-height: 1;
+}
+.faq__item[open] summary::after {
+  content: '−' / '';
+}
+.faq__item summary:hover {
+  background: var(--couleur-fond);
+}
+.faq__item summary:focus-visible {
+  outline-offset: -3px;
+}
+
+/* La réponse */
+.faq__item p {
+  margin: 0;
+  padding: 0 var(--espace-4) var(--espace-4);
+  color: var(--couleur-texte-secondaire);
+}
+
+/* ---------- Formulaire de contact ---------- */
+.contact textarea {
+  resize: vertical;
+}

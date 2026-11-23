@@ -1,0 +1,58 @@
+/* Toutes les valeurs de design sont déclarées ici.
+   Aucune couleur, espacement ou rayon en dur dans les composants. */
+:root {
+  /* Couleurs */
+  --couleur-primaire: #2a2ad4;
+  --couleur-primaire-fonce: #1f1fa8;
+  --couleur-fond: #f1efe9;
+  --couleur-surface: #ffffff;
+  --couleur-texte: #1b1b2f;
+  --couleur-texte-secondaire: #4a4a5e; /* contraste >= 4,5:1 sur le fond */
+  --couleur-bordure: #cfcbc0;
+  --couleur-erreur: #b3261e;
+  --couleur-erreur-fond: #fbe9e7;
+  --couleur-succes: #1b6e3a;
+  --couleur-succes-fond: #e3f3e8;
+  --couleur-focus: #ff9f1c;
+  --couleur-sur-primaire: #ffffff;
+
+  /* Sports (texte foncé sur ces fonds pour garder le contraste) */
+  --sport-course: #ff8a5c;
+  --sport-velo: #ffc933;
+  --sport-padel: #5fd38a;
+  --sport-foot: #6aa8ff;
+  --sport-rando: #d3a878;
+  --texte-sur-sport: #111111;
+
+  /* Accueil (photo de fond + voile sombre pour garder le texte blanc lisible) */
+  --splash-fond-secours: #1a1030;
+  --splash-voile-haut: rgba(10, 8, 25, 0.05);
+  --splash-voile-milieu: rgba(10, 8, 25, 0.55);
+  --splash-voile-bas: rgba(10, 8, 25, 0.92);
+
+  /* Espacements */
+  --espace-1: 0.25rem;
+  --espace-2: 0.5rem;
+  --espace-3: 0.75rem;
+  --espace-4: 1rem;
+  --espace-5: 1.5rem;
+  --espace-6: 2rem;
+
+  /* Rayons */
+  --rayon-petit: 0.5rem;
+  --rayon-moyen: 0.75rem;
+  --rayon-rond: 999px;
+
+  /* Typographie */
+  --police: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --taille-mini: 0.75rem; /* textes de la barre du bas */
+  --taille-petite: 0.875rem;
+  --taille-base: 1rem;
+  --taille-titre-2: 1.5rem;
+  --taille-titre-1: 2rem;
+
+  /* Divers */
+  --largeur-app: 430px;
+  --hauteur-cible: 2.75rem; /* zone tactile minimale */
+  --hauteur-barre: 4rem; /* barre du bas */
+}

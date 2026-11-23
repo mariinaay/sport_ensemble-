@@ -1,0 +1,47 @@
+/* Styles de la page d'accueil. */
+
+/* ---------- Page d'accueil (splash) ---------- */
+.splash {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--espace-4);
+  padding: var(--espace-5) var(--espace-4) var(--espace-6);
+  color: var(--couleur-sur-primaire);
+  /* Photo (src/assets/img/accueil.jpg) sous un voile sombre qui garde le texte lisible */
+  background-color: var(--splash-fond-secours);
+  background-image:
+    linear-gradient(
+      180deg,
+      var(--splash-voile-haut) 0%,
+      var(--splash-voile-milieu) 45%,
+      var(--splash-voile-bas) 100%
+    ),
+    url('../../assets/img/accueil.jpg');
+  background-size: cover;
+  background-position: center top;
+}
+.splash__surtitre {
+  margin: 0;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: var(--taille-petite);
+  font-weight: 600;
+}
+.splash h1 {
+  margin: 0;
+  font-size: 2.6rem;
+}
+.splash__pastilles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.splash__actions {
+  display: grid;
+  gap: var(--espace-3);
+}

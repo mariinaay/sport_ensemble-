@@ -1,0 +1,200 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "firstName": "Emma",
+      "lastName": "Dupont",
+      "email": "emma.dupont@email.com",
+      "password": "emma1234",
+      "city": "Paris 19e",
+      "reliability": 92,
+      "verified": true,
+      "sports": [
+        {
+          "sport": "course",
+          "level": "debutant",
+          "pace": "6:30"
+        },
+        {
+          "sport": "velo",
+          "level": "intermediaire"
+        }
+      ],
+      "notifications": {
+        "rappelSeance": true,
+        "nouveauParticipant": true,
+        "seanceAnnulee": true,
+        "messages": true,
+        "recapEmail": false
+      }
+    },
+    {
+      "id": 2,
+      "firstName": "Sarah",
+      "lastName": "Martin",
+      "email": "sarah@email.com",
+      "password": "sarah1234",
+      "city": "Paris 19e",
+      "reliability": 92,
+      "verified": true,
+      "sports": [
+        {
+          "sport": "course",
+          "level": "debutant",
+          "pace": "6:30"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "firstName": "Léo",
+      "lastName": "Bernard",
+      "email": "leo@email.com",
+      "password": "leo12345",
+      "city": "Paris 10e",
+      "reliability": 88,
+      "verified": true,
+      "sports": [
+        {
+          "sport": "course",
+          "level": "debutant",
+          "pace": "6:30"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "firstName": "Karim",
+      "lastName": "Haddad",
+      "email": "karim@email.com",
+      "password": "karim1234",
+      "city": "Paris 13e",
+      "reliability": 84,
+      "verified": true,
+      "sports": [
+        {
+          "sport": "padel",
+          "level": "intermediaire"
+        }
+      ]
+    },
+    {
+      "firstName": "Marina",
+      "lastName": "YOUSSEF",
+      "email": "marina.youssef@efrei.net",
+      "password": "5!xgNJT_2j2b-Zz",
+      "city": "Villejuif",
+      "reliability": 100,
+      "verified": false,
+      "sports": [],
+      "id": 5
+    }
+  ],
+  "sessions": [
+    {
+      "id": 1,
+      "sport": "course",
+      "title": "Buttes-Chaumont",
+      "date": "2026-10-18",
+      "time": "09:00",
+      "place": "Entrée Botzaris, Buttes-Chaumont",
+      "city": "Paris 19e",
+      "distanceFromUserKm": 0.8,
+      "level": "debutant",
+      "pace": "6:30",
+      "distanceKm": 5,
+      "durationMin": 35,
+      "capacity": 4,
+      "organizerId": 2,
+      "verifiedOnly": true
+    },
+    {
+      "id": 2,
+      "sport": "padel",
+      "title": "Urban Padel, Paris 13e",
+      "date": "2026-10-18",
+      "time": "19:00",
+      "place": "Urban Padel, Paris 13e",
+      "city": "Paris 13e",
+      "distanceFromUserKm": 2.1,
+      "level": "intermediaire",
+      "capacity": 4,
+      "pricePerPerson": 9,
+      "organizerId": 4,
+      "verifiedOnly": true
+    },
+    {
+      "id": 3,
+      "sport": "course",
+      "title": "Canal Saint-Martin",
+      "date": "2026-10-24",
+      "time": "10:00",
+      "place": "Canal St-Martin",
+      "city": "Paris 10e",
+      "distanceFromUserKm": 1.9,
+      "level": "debutant",
+      "pace": "6:30",
+      "distanceKm": 5,
+      "durationMin": 35,
+      "capacity": 6,
+      "organizerId": 3,
+      "verifiedOnly": false
+    },
+    {
+      "id": 4,
+      "sport": "velo",
+      "title": "Bois de Vincennes",
+      "date": "2026-10-25",
+      "time": "09:30",
+      "place": "Porte Dorée",
+      "city": "Paris 12e",
+      "distanceFromUserKm": 5.4,
+      "level": "intermediaire",
+      "capacity": 8,
+      "organizerId": 4,
+      "verifiedOnly": false
+    },
+    {
+      "id": 5,
+      "sport": "rando",
+      "title": "Forêt de Fontainebleau",
+      "date": "2026-10-26",
+      "time": "08:30",
+      "place": "Gare de Fontainebleau",
+      "city": "Fontainebleau",
+      "distanceFromUserKm": 60,
+      "level": "debutant",
+      "capacity": 10,
+      "organizerId": 3,
+      "verifiedOnly": false
+    }
+  ],
+  "registrations": [
+    {
+      "id": 1,
+      "sessionId": 1,
+      "userId": 3
+    },
+    {
+      "id": 2,
+      "sessionId": 1,
+      "userId": 1
+    },
+    {
+      "id": 3,
+      "sessionId": 2,
+      "userId": 1
+    },
+    {
+      "id": 4,
+      "sessionId": 3,
+      "userId": 1
+    },
+    {
+      "id": 5,
+      "sessionId": 2,
+      "userId": 4
+    }
+  ],
+  "messages": []
+}

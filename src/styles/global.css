@@ -1,0 +1,262 @@
+/* Styles communs à toute l'application : base + composants partagés (src/components). */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--couleur-fond);
+  color: var(--couleur-texte);
+  font-family: var(--police);
+  font-size: var(--taille-base);
+  line-height: 1.5;
+  overflow-x: hidden; /* pas de défilement horizontal à 320 px */
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.15;
+  margin: 0 0 var(--espace-3);
+}
+h1 {
+  font-size: var(--taille-titre-1);
+}
+h2 {
+  font-size: var(--taille-titre-2);
+}
+p {
+  margin: 0 0 var(--espace-3);
+}
+a {
+  color: var(--couleur-primaire);
+}
+
+/* Focus toujours visible au clavier */
+:focus-visible {
+  outline: 3px solid var(--couleur-focus);
+  outline-offset: 2px;
+}
+
+/* Lien « Aller au contenu » : apparaît quand on arrive dessus au clavier */
+.lien-evitement {
+  position: absolute;
+  left: var(--espace-2);
+  top: -4rem;
+  background: var(--couleur-surface);
+  padding: var(--espace-2) var(--espace-3);
+  border-radius: var(--rayon-petit);
+  z-index: 10;
+}
+.lien-evitement:focus {
+  top: var(--espace-2);
+}
+
+/* Conteneur de l'application (format mobile centré) */
+.app {
+  max-width: var(--largeur-app);
+  min-height: 100vh;
+  margin: 0 auto;
+  background: var(--couleur-fond);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Texte lu par les lecteurs d'écran mais invisible à l'écran */
+.visuellement-cache {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Lien « ‹ Profil » en haut d'une sous-page */
+.lien-retour {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--hauteur-cible);
+  margin-bottom: var(--espace-2);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Une page normale (toutes sauf l'accueil) */
+.page {
+  flex: 1;
+  padding: var(--espace-5) var(--espace-4);
+}
+
+/* ---------- Champ de formulaire ---------- */
+.champ {
+  margin-bottom: var(--espace-4);
+}
+.champ label {
+  display: block;
+  margin-bottom: var(--espace-1);
+  font-weight: 600;
+}
+/* Étoile « champ obligatoire » */
+.champ__etoile {
+  color: var(--couleur-erreur);
+}
+.champ__input {
+  width: 100%;
+  min-height: var(--hauteur-cible);
+  padding: var(--espace-2) var(--espace-3);
+  border: 2px solid var(--couleur-bordure);
+  border-radius: var(--rayon-moyen);
+  background: var(--couleur-surface);
+  color: var(--couleur-texte);
+  font: inherit;
+}
+.champ__input[aria-invalid='true'] {
+  border-color: var(--couleur-erreur);
+}
+.champ__erreur {
+  margin: var(--espace-1) 0 0;
+  color: var(--couleur-erreur);
+  font-size: var(--taille-petite);
+  font-weight: 600;
+}
+
+/* Erreur en haut d'un formulaire (ex. « Email ou mot de passe incorrect ») */
+.message-erreur {
+  padding: var(--espace-3) var(--espace-4);
+  border-radius: var(--rayon-moyen);
+  background: var(--couleur-erreur-fond);
+  color: var(--couleur-erreur);
+}
+/* Message vert (ex. « Modifications enregistrées ») */
+.message-succes {
+  padding: var(--espace-3) var(--espace-4);
+  border-radius: var(--rayon-moyen);
+  background: var(--couleur-succes-fond);
+  color: var(--couleur-succes);
+}
+
+/* ---------- Icônes ---------- */
+.icone {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.icone--mini {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+/* ---------- Bouton ---------- */
+.bouton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: var(--hauteur-cible);
+  padding: var(--espace-3) var(--espace-5);
+  border: 2px solid transparent;
+  border-radius: var(--rayon-rond);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+.bouton--primaire {
+  background: var(--couleur-primaire);
+  color: var(--couleur-sur-primaire);
+}
+.bouton--primaire:hover:not(:disabled) {
+  background: var(--couleur-primaire-fonce);
+}
+.bouton--secondaire {
+  background: var(--couleur-surface);
+  color: var(--couleur-texte);
+  border-color: var(--couleur-bordure);
+}
+/* Bouton qui ressemble à un lien rouge (ex. « Se déconnecter ») */
+.bouton--lien {
+  background: transparent;
+  color: var(--couleur-erreur);
+}
+/* Pareil en gris (ex. « Annuler ») */
+.bouton--lien-gris {
+  background: transparent;
+  color: var(--couleur-texte-secondaire);
+}
+.bouton--lien:hover,
+.bouton--lien-gris:hover {
+  text-decoration: underline;
+}
+.bouton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---------- Pastille de sport ---------- */
+.pastille {
+  display: inline-block;
+  padding: var(--espace-1) var(--espace-3);
+  border-radius: var(--rayon-rond);
+  color: var(--texte-sur-sport);
+  font-size: var(--taille-petite);
+  font-weight: 700;
+}
+.pastille--course { background: var(--sport-course); }
+.pastille--velo { background: var(--sport-velo); }
+.pastille--padel { background: var(--sport-padel); }
+.pastille--foot { background: var(--sport-foot); }
+.pastille--rando { background: var(--sport-rando); }
+
+/* ---------- Barre du bas ---------- */
+/* Place en bas de la page, pour que la barre ne cache pas le contenu */
+.app--avec-barre {
+  padding-bottom: var(--hauteur-barre);
+}
+
+.barre {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--largeur-app);
+  height: var(--hauteur-barre);
+  border-top: 1px solid var(--couleur-bordure);
+  background: var(--couleur-surface);
+}
+.barre ul {
+  display: flex;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.barre li {
+  flex: 1;
+}
+
+/* Un onglet : l'icône au-dessus du texte */
+.barre a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espace-1);
+  height: 100%;
+  color: var(--couleur-texte-secondaire);
+  font-size: var(--taille-mini);
+  line-height: 1.1;
+  text-align: center;
+  text-decoration: none;
+}
+
+/* L'onglet de la page affichée : en bleu */
+.barre a[aria-current='page'] {
+  color: var(--couleur-primaire);
+  font-weight: 700;
+}

@@ -1,0 +1,211 @@
+/* Styles de la page Profil (maquette 06). */
+
+/* ---------- En-tête ---------- */
+.profil {
+  margin-bottom: var(--espace-5);
+  text-align: center;
+}
+
+.profil__avatar-cadre {
+  position: relative;
+  width: 5rem;
+  margin: 0 auto var(--espace-4);
+}
+
+/* Rond bleu avec les initiales */
+.profil__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  height: 5rem;
+  border-radius: var(--rayon-rond);
+  background: var(--couleur-primaire);
+  color: var(--couleur-sur-primaire);
+  font-size: var(--taille-titre-2);
+  font-weight: 700;
+}
+
+/* Pastille verte « vérifié » sous l'avatar */
+.profil__badge {
+  position: absolute;
+  left: 50%;
+  bottom: calc(-1 * var(--espace-2));
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid var(--couleur-fond);
+  border-radius: var(--rayon-rond);
+  background: var(--couleur-succes);
+  color: var(--couleur-sur-primaire);
+}
+
+.profil h2 {
+  margin-bottom: var(--espace-1);
+}
+
+.profil__email {
+  color: var(--couleur-texte-secondaire);
+}
+
+/* Étiquette avec la ville (ex. « Paris 19e ») */
+.profil__ville {
+  display: inline-block;
+  margin-bottom: var(--espace-2);
+  padding: var(--espace-1) var(--espace-3);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-rond);
+  background: var(--couleur-surface);
+  font-size: var(--taille-petite);
+  font-weight: 600;
+}
+
+.profil__fiabilite {
+  margin: 0;
+  color: var(--couleur-texte-secondaire);
+  font-size: var(--taille-petite);
+}
+
+/* ---------- Rubriques ---------- */
+.menu-profil {
+  margin: 0 0 var(--espace-4);
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+  border-radius: var(--rayon-moyen);
+  background: var(--couleur-surface);
+}
+.menu-profil li + li {
+  border-top: 1px solid var(--couleur-bordure);
+}
+
+.ligne-menu {
+  display: flex;
+  align-items: center;
+  gap: var(--espace-3);
+  width: 100%;
+  min-height: var(--hauteur-cible);
+  padding: var(--espace-3) var(--espace-4);
+  border: 0;
+  background: transparent;
+  color: var(--couleur-texte);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.ligne-menu:hover {
+  background: var(--couleur-fond);
+}
+.ligne-menu:focus-visible {
+  outline-offset: -3px; /* contour à l'intérieur, sinon il est coupé */
+}
+
+/* Carré gris derrière l'icône */
+.ligne-menu__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--rayon-petit);
+  background: var(--couleur-fond);
+}
+
+.ligne-menu__textes {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+.ligne-menu__titre {
+  font-weight: 700;
+}
+.ligne-menu__sous-titre {
+  color: var(--couleur-texte-secondaire);
+  font-size: var(--taille-petite);
+}
+
+/* La flèche tourne quand « Mes informations » est ouvert */
+.ligne-menu__fleche--ouverte {
+  transform: rotate(90deg);
+}
+
+/* Le formulaire qui s'ouvre sous « Mes informations » */
+.ligne-menu__panneau {
+  padding: var(--espace-2) var(--espace-4) var(--espace-4);
+}
+
+/* « Connexion et sécurité » : un petit titre par formulaire, et un trait entre les deux */
+.ligne-menu__panneau h3 {
+  margin-bottom: var(--espace-2);
+  font-size: var(--taille-base);
+}
+.panneau__actuel {
+  color: var(--couleur-texte-secondaire);
+  font-size: var(--taille-petite);
+}
+.panneau--separe {
+  border-top: 1px solid var(--couleur-bordure);
+  padding-top: var(--espace-4);
+}
+
+/* ---------- Déconnexion ---------- */
+.profil__deconnexion {
+  text-align: center;
+}
+
+/* ---------- Page Notifications ---------- */
+.notifications__intro {
+  color: var(--couleur-texte-secondaire);
+}
+
+/* Le bloc blanc qui contient les lignes (même style que les rubriques du profil) */
+.cases {
+  min-width: 0;
+  margin: var(--espace-4) 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--rayon-moyen);
+  background: var(--couleur-surface);
+}
+
+/* Une ligne : le texte à gauche, la case à droite. Toute la ligne est cliquable. */
+.case {
+  display: flex;
+  align-items: center;
+  gap: var(--espace-3);
+  min-height: var(--hauteur-cible);
+  padding: var(--espace-3) var(--espace-4);
+  cursor: pointer;
+}
+.case + .case {
+  border-top: 1px solid var(--couleur-bordure);
+}
+.case:hover {
+  background: var(--couleur-fond);
+}
+.case__textes {
+  flex: 1;
+}
+.case__titre {
+  display: block;
+  font-weight: 600;
+}
+.case__aide {
+  display: block;
+  color: var(--couleur-texte-secondaire);
+  font-size: var(--taille-petite);
+}
+.case input {
+  flex-shrink: 0;
+  width: 1.375rem;
+  height: 1.375rem;
+  margin: 0;
+  accent-color: var(--couleur-primaire);
+  cursor: pointer;
+}

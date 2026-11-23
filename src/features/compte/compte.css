@@ -1,0 +1,13 @@
+/* Styles des pages Connexion et Inscription. */
+
+.pied-formulaire {
+  margin-top: var(--espace-4);
+  text-align: center;
+}
+
+/* « Mot de passe oublié ? » : à droite, juste sous le champ mot de passe */
+.lien-oubli {
+  margin-top: calc(-1 * var(--espace-2));
+  text-align: right;
+  font-size: var(--taille-petite);
+}
