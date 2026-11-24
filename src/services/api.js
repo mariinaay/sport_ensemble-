@@ -1,7 +1,7 @@
 // Base de tous les appels au back (json-server : npm run api)
 const ADRESSE_API = 'http://localhost:3001'
 
-// Envoie une requête au back et renvoie la réponse
+// Appelle le back ; en cas d'échec, l'Error contient le message à afficher à l'écran
 export async function requete(chemin, options) {
   const reponse = await fetch(ADRESSE_API + chemin, options).catch(() => {
     throw new Error('Impossible de joindre le serveur.')

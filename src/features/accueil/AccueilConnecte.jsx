@@ -1,35 +1,33 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import Bouton from '../../components/Bouton'
-import CarteSeance from '../../components/CarteSeance'
+import CarteSeance, { Avatars } from '../../components/CarteSeance'
 import EtatChargement from '../../components/EtatChargement'
 import Icone from '../../components/Icone'
 import { lireProfil } from '../../services/profil'
 import { lireSeances } from '../../services/seances'
 import { lireUtilisateur } from '../../services/session'
-import { AUJOURDHUI, dateSeance, NOMS_COURTS, SPORTS } from '../../utils/constants'
-import '../../styles/theme-v2.css'
+import { AUJOURDHUI, dateSeance, heureCourte, NOMS_COURTS, SPORTS } from '../../utils/constants'
+import '../../styles/theme.css'
 import './accueil-connecte.css'
+
+// Tracé du parcours dessiné dans le bloc sombre (un halo large + une ligne en pointillés par-dessus)
+const TRACE = 'M118 4 C 96 40, 112 70, 86 104 S 40 150, 22 198'
 
 const UNE_HEURE = 60 * 60 * 1000
 const UN_JOUR = 24 * UNE_HEURE
 
-// 16 oct. 2026 → 'Vendredi 16 octobre'
-function dateDuJour() {
-  const texte = AUJOURDHUI.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
-  return texte[0].toUpperCase() + texte.slice(1)
-}
+// 'vendredi 16 octobre' → 'Vendredi 16 octobre'
+const majuscule = (texte) => texte[0].toUpperCase() + texte.slice(1)
 
-// Nombre de jours entre aujourd'hui et la séance (en jours du calendrier)
-function joursAvant(seance) {
-  const debut = dateSeance(seance)
-  const jourSeance = new Date(debut.getFullYear(), debut.getMonth(), debut.getDate())
-  const jourActuel = new Date(AUJOURDHUI.getFullYear(), AUJOURDHUI.getMonth(), AUJOURDHUI.getDate())
-  return Math.round((jourSeance - jourActuel) / UN_JOUR)
-}
+const DATE_DU_JOUR = majuscule(AUJOURDHUI.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }))
 
-// 0 → 'Aujourd’hui' ; 1 → 'Demain' ; 2 → 'Dans 2 jours'
-function texteJours(jours) {
+// Minuit du même jour : pour compter en jours du calendrier, pas en tranches de 24 h
+const minuit = (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate())
+
+// 'Aujourd’hui', 'Demain' ou 'Dans 2 jours'
+function delai(seance) {
+  const jours = Math.round((minuit(dateSeance(seance)) - minuit(AUJOURDHUI)) / UN_JOUR)
   if (jours === 0) return 'Aujourd’hui'
   if (jours === 1) return 'Demain'
   return `Dans ${jours} jours`
@@ -37,31 +35,26 @@ function texteJours(jours) {
 
 // Temps restant pour annuler gratuitement (jusqu'à 1 h avant le début) : '1 j 13 h', ou '' si c'est trop tard
 function tempsAnnulation(seance) {
-  const limite = dateSeance(seance).getTime() - UNE_HEURE
-  const heures = Math.floor((limite - AUJOURDHUI.getTime()) / UNE_HEURE)
+  const heures = Math.floor((dateSeance(seance) - UNE_HEURE - AUJOURDHUI) / UNE_HEURE)
   if (heures <= 0) return ''
-  const jours = Math.floor(heures / 24)
-  if (jours === 0) return `${heures} h`
-  return `${jours} j ${heures % 24} h`
+  if (heures < 24) return `${heures} h`
+  return `${Math.floor(heures / 24)} j ${heures % 24} h`
 }
 
 // 'Dim. 18 oct. · 9:00 · 5 km · 6:30 /km'
 function infosSeance(seance) {
   const debut = dateSeance(seance)
   const jour = debut.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })
-  const morceaux = [jour[0].toUpperCase() + jour.slice(1), `${debut.getHours()}:${String(debut.getMinutes()).padStart(2, '0')}`]
+  const morceaux = [majuscule(jour), heureCourte(debut)]
   if (seance.distanceKm) morceaux.push(`${seance.distanceKm} km`)
   if (seance.pace) morceaux.push(`${seance.pace} /km`)
   return morceaux.join(' · ')
 }
 
 // ['Sarah', 'Léo', 'Tom'] → 'Sarah, Léo et Tom'
-function listePrenoms(prenoms) {
-  if (prenoms.length <= 1) return prenoms.join('')
-  return `${prenoms.slice(0, -1).join(', ')} et ${prenoms[prenoms.length - 1]}`
-}
+const listePrenoms = (prenoms) => new Intl.ListFormat('fr').format(prenoms)
 
-// Page d'accueil quand on est connecté (maquette V2 · 01 — Accueil)
+// Page d'accueil quand on est connecté (maquette 01 — Accueil)
 export default function AccueilConnecte() {
   const id = lireUtilisateur()?.id
 
@@ -71,7 +64,6 @@ export default function AccueilConnecte() {
   const [erreur, setErreur] = useState('')
   const [essai, setEssai] = useState(0) // +1 à chaque « Réessayer »
 
-  // Charger le profil et les séances en même temps
   useEffect(() => {
     if (!id) return
     setChargement(true)
@@ -85,10 +77,8 @@ export default function AccueilConnecte() {
       .finally(() => setChargement(false))
   }, [id, essai])
 
-  // Pas connecté : on va à la page de connexion
   if (!id) return <Navigate to="/connexion" replace />
 
-  // Les séances pas encore commencées
   const aVenir = seances.filter((s) => dateSeance(s) >= AUJOURDHUI)
 
   // Ma prochaine séance : la plus proche dans le temps parmi celles où je suis inscrit·e
@@ -102,31 +92,32 @@ export default function AccueilConnecte() {
     .sort((a, b) => a.distanceFromUserKm - b.distanceFromUserKm)
     .slice(0, 2)
 
-  // Chiffres du bloc sombre
+  // Chiffres du bloc sombre (week-end = samedi ou dimanche des 7 prochains jours)
   const ceWeekEnd = aVenir.filter((s) => {
-    const jour = dateSeance(s).getDay()
-    return (jour === 0 || jour === 6) && dateSeance(s) - AUJOURDHUI < 7 * UN_JOUR
+    const debut = dateSeance(s)
+    return [0, 6].includes(debut.getDay()) && debut - AUJOURDHUI < 7 * UN_JOUR
   })
   const sportifs = new Set(aVenir.flatMap((s) => s.inscrits.map((u) => u.id)))
 
-  const annulation = prochaine ? tempsAnnulation(prochaine) : ''
-  const autresInscrits = prochaine ? prochaine.inscrits.filter((u) => u.id !== id) : []
+  // Infos de ma prochaine séance (utilisées seulement s'il y en a une)
+  const annulation = prochaine && tempsAnnulation(prochaine)
+  const autresPrenoms = prochaine?.inscrits.filter((u) => u.id !== id).map((u) => u.firstName)
 
   return (
-    <main id="contenu" className="page theme-v2 accueil-v2">
+    <main id="contenu" className="page theme accueil-connecte">
       <EtatChargement chargement={chargement} erreur={erreur} onReessayer={() => setEssai(essai + 1)} />
 
       {!chargement && profil && (
         <>
           {/* 1. En-tête : date, prénom, notifications */}
-          <header className="accueil-v2__entete">
+          <header className="accueil-connecte__entete">
             <div>
-              <p className="accueil-v2__date">{dateDuJour()}</p>
-              <h1 className="accueil-v2__bonjour">
+              <p className="accueil-connecte__date">{DATE_DU_JOUR}</p>
+              <h1 className="accueil-connecte__bonjour">
                 Salut {profil.firstName} <span aria-hidden="true">👋</span>
               </h1>
             </div>
-            <Link to="/notifications" state={{ depuis: 'accueil' }} className="accueil-v2__cloche" aria-label="Notifications">
+            <Link to="/notifications" state={{ depuis: 'accueil' }} className="accueil-connecte__cloche" aria-label="Notifications">
               <Icone nom="cloche" />
             </Link>
           </header>
@@ -134,14 +125,12 @@ export default function AccueilConnecte() {
           {/* 2. Grand bloc sombre : l'invitation à bouger */}
           <section className="accroche" aria-labelledby="titre-accroche">
             <svg className="accroche__trace" viewBox="0 0 120 200" preserveAspectRatio="none" aria-hidden="true">
-              <path className="accroche__halo" d="M118 4 C 96 40, 112 70, 86 104 S 40 150, 22 198" />
-              <path className="accroche__ligne" d="M118 4 C 96 40, 112 70, 86 104 S 40 150, 22 198" />
+              <path className="accroche__halo" d={TRACE} />
+              <path className="accroche__ligne" d={TRACE} />
             </svg>
 
             <p className="accroche__badge">Sport ensemble</p>
-            <h2 id="titre-accroche" className="accroche__titre">
-              Ce week-end, on bouge&nbsp;?
-            </h2>
+            <h2 id="titre-accroche" className="accroche__titre">Ce week-end, on bouge&nbsp;?</h2>
             <p className="accroche__texte">Des sorties à ton rythme, près de chez toi.</p>
 
             <dl className="accroche__chiffres">
@@ -155,7 +144,7 @@ export default function AccueilConnecte() {
               </div>
               <div>
                 <dt>ta fiabilité</dt>
-                <dd>{profil.reliability ?? '—'}{profil.reliability !== undefined && ' %'}</dd>
+                <dd>{profil.reliability == null ? '—' : `${profil.reliability} %`}</dd>
               </div>
             </dl>
 
@@ -163,10 +152,8 @@ export default function AccueilConnecte() {
           </section>
 
           {/* 3. Ma prochaine séance */}
-          <section className="accueil-v2__bloc" aria-labelledby="titre-prochaine">
-            <h2 id="titre-prochaine" className="accueil-v2__titre">
-              Ma prochaine séance
-            </h2>
+          <section className="accueil-connecte__bloc" aria-labelledby="titre-prochaine">
+            <h2 id="titre-prochaine" className="accueil-connecte__titre">Ma prochaine séance</h2>
 
             {prochaine ? (
               <Link to={`/seances/${prochaine.id}`} className="prochaine">
@@ -181,22 +168,14 @@ export default function AccueilConnecte() {
                   </span>
                 </span>
 
-                <span className="prochaine__delai">{texteJours(joursAvant(prochaine))}</span>
+                <span className="prochaine__delai">{delai(prochaine)}</span>
                 <span className="prochaine__lieu">{prochaine.title}</span>
                 <span className="prochaine__infos">{infosSeance(prochaine)}</span>
 
                 <span className="prochaine__bas">
                   <span className="prochaine__groupe">
-                    <span className="carte-seance__avatars" aria-hidden="true">
-                      {prochaine.inscrits.slice(0, 3).map((u) => (
-                        <span key={u.id} className="avatar">
-                          {u.firstName.slice(0, 2).toUpperCase()}
-                        </span>
-                      ))}
-                    </span>
-                    {autresInscrits.length > 0
-                      ? `Avec ${listePrenoms(autresInscrits.map((u) => u.firstName))}`
-                      : 'Tu es le premier inscrit·e'}
+                    <Avatars inscrits={prochaine.inscrits} />
+                    {autresPrenoms.length > 0 ? `Avec ${listePrenoms(autresPrenoms)}` : 'Tu es le premier inscrit·e'}
                   </span>
                   <span className="carte-seance__fleche" aria-hidden="true">
                     <Icone nom="fleche" className="icone icone--petite" />
@@ -211,8 +190,8 @@ export default function AccueilConnecte() {
                 )}
               </Link>
             ) : (
-              <div className="accueil-v2__vide">
-                <span className="accueil-v2__vide-icone">
+              <div className="accueil-connecte__vide">
+                <span className="accueil-connecte__vide-icone">
                   <Icone nom="calendrier" />
                 </span>
                 <p>
@@ -224,10 +203,8 @@ export default function AccueilConnecte() {
           </section>
 
           {/* 4. Les 5 sports, chacun dans sa couleur */}
-          <section className="accueil-v2__bloc" aria-labelledby="titre-sports">
-            <h2 id="titre-sports" className="accueil-v2__titre">
-              Choisis ton sport
-            </h2>
+          <section className="accueil-connecte__bloc" aria-labelledby="titre-sports">
+            <h2 id="titre-sports" className="accueil-connecte__titre">Choisis ton sport</h2>
             <ul className="sports">
               {SPORTS.map((sport) => (
                 <li key={sport.value}>
@@ -243,19 +220,17 @@ export default function AccueilConnecte() {
           </section>
 
           {/* 5. Les séances les plus proches */}
-          <section className="accueil-v2__bloc" aria-labelledby="titre-pres">
-            <div className="accueil-v2__titre-ligne">
-              <h2 id="titre-pres" className="accueil-v2__titre">
-                Près de toi
-              </h2>
-              <Link to="/seances" className="accueil-v2__tout-voir">
+          <section className="accueil-connecte__bloc" aria-labelledby="titre-pres">
+            <div className="accueil-connecte__titre-ligne">
+              <h2 id="titre-pres" className="accueil-connecte__titre">Près de toi</h2>
+              <Link to="/seances" className="accueil-connecte__tout-voir">
                 Tout voir
                 <Icone nom="fleche" className="icone icone--petite" />
               </Link>
             </div>
 
-            {presDeMoi.length === 0 && <p className="accueil-v2__aucune">Aucune autre séance pour l’instant.</p>}
-            <ul className="accueil-v2__liste">
+            {presDeMoi.length === 0 && <p className="accueil-connecte__aucune">Aucune autre séance pour l’instant.</p>}
+            <ul className="accueil-connecte__liste">
               {presDeMoi.map((seance) => (
                 <li key={seance.id}>
                   <CarteSeance seance={seance} idUtilisateur={id} />

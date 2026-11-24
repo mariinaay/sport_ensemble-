@@ -16,8 +16,7 @@ export default function Notifications() {
   const depuisAccueil = useLocation().state?.depuis === 'accueil'
   const id = lireUtilisateur()?.id
 
-  const [choix, setChoix] = useState(PAR_DEFAUT)
-  const [chargement, setChargement] = useState(true)
+  const [choix, setChoix] = useState(null) // null tant que les choix enregistrés ne sont pas chargés
   const [erreur, setErreur] = useState('') // erreur au chargement
   const [essai, setEssai] = useState(0) // +1 à chaque « Réessayer »
   const [envoi, setEnvoi] = useState(false)
@@ -27,12 +26,10 @@ export default function Notifications() {
   // Charger les choix enregistrés
   useEffect(() => {
     if (!id) return
-    setChargement(true)
     setErreur('')
     lireProfil(id)
       .then((profil) => setChoix({ ...PAR_DEFAUT, ...profil.notifications }))
       .catch((e) => setErreur(e.message))
-      .finally(() => setChargement(false))
   }, [id, essai])
 
   // Cocher / décocher une case
@@ -63,9 +60,9 @@ export default function Notifications() {
       <h1>Notifications</h1>
       <p className="notifications__intro">Choisis quand Sport Ensemble te prévient.</p>
 
-      <EtatChargement chargement={chargement} erreur={erreur} onReessayer={() => setEssai(essai + 1)} />
+      <EtatChargement chargement={!choix && !erreur} erreur={erreur} onReessayer={() => setEssai(essai + 1)} />
 
-      {!chargement && !erreur && (
+      {choix && (
         <form onSubmit={enregistrer}>
           <fieldset className="cases">
             <legend className="visuellement-cache">Me prévenir pour</legend>

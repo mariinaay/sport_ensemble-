@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom'
 import Bouton from '../../components/Bouton'
 import EtatChargement from '../../components/EtatChargement'
 import { lireUtilisateur } from '../../services/session'
-import { chargerMesSeances, dateSeance, heureSeance } from '../../services/mes-seances'
-import { libelleSport } from '../../utils/constants'
-import '../../styles/theme-v2.css'
+import { chargerMesSeances, dateTexte, heureSeance, niveauTexte } from '../../services/mes-seances'
+import { dateSeance, libelleSport } from '../../utils/constants'
+import '../../styles/theme.css'
 import './mes-pages.css'
 
 export default function MesSeances() {
-  const [onglet, setOnglet] = useState('avenir')
+  const [aVenir, setAVenir] = useState(true)
   const [seances, setSeances] = useState(null)
   const [erreur, setErreur] = useState('')
   const utilisateur = lireUtilisateur()
@@ -25,20 +25,17 @@ export default function MesSeances() {
 
   useEffect(() => { charger() }, [charger])
 
-  const liste = seances?.filter(({ seance }) => {
-    const date = new Date(`${seance.date}T${seance.time}:00`)
-    return (date >= new Date()) === (onglet === 'avenir')
-  })
+  const liste = seances?.filter(({ seance }) => (dateSeance(seance) >= new Date()) === aVenir)
 
   return (
-    <main id="contenu" className="page mes-seances theme-v2">
+    <main id="contenu" className="page mes-seances theme">
       <h1>Mes séances</h1>
 
       <div className="onglets" aria-label="Filtrer les séances">
-        <button type="button" className={onglet === 'avenir' ? 'actif' : ''} aria-pressed={onglet === 'avenir'} onClick={() => setOnglet('avenir')}>
+        <button type="button" className={aVenir ? 'actif' : ''} aria-pressed={aVenir} onClick={() => setAVenir(true)}>
           À venir
         </button>
-        <button type="button" className={onglet === 'passees' ? 'actif' : ''} aria-pressed={onglet === 'passees'} onClick={() => setOnglet('passees')}>
+        <button type="button" className={aVenir ? '' : 'actif'} aria-pressed={!aVenir} onClick={() => setAVenir(false)}>
           Passées
         </button>
       </div>
@@ -46,19 +43,19 @@ export default function MesSeances() {
       <EtatChargement chargement={!seances && !erreur} erreur={erreur} onReessayer={charger} />
       {!utilisateur && <p>Connecte-toi pour retrouver tes séances. <Link to="/connexion">Se connecter</Link></p>}
       {utilisateur && liste?.length === 0 && (
-        <p className="texte-secondaire">Aucune séance {onglet === 'avenir' ? 'à venir' : 'passée'} pour le moment.</p>
+        <p className="texte-secondaire">Aucune séance {aVenir ? 'à venir' : 'passée'} pour le moment.</p>
       )}
 
       <div className="liste-seances">
         {liste?.map(({ inscription, seance, organisateur }) => (
           <Link to={`/seances/${seance.id}`} className="carte mes-carte" key={inscription.id}>
             <div className="mes-carte__titre">
-              <strong>{libelleSport(seance.sport)} · {seance.level === 'intermediaire' ? 'intermédiaire' : 'débutant'}</strong>
-              <span className={onglet === 'avenir' ? 'statut' : 'statut statut--passe'}>
-                {onglet === 'avenir' ? '● Inscrite' : '✓ Passée'}
+              <strong>{libelleSport(seance.sport)} · {niveauTexte(seance)}</strong>
+              <span className={aVenir ? 'statut' : 'statut statut--passe'}>
+                {aVenir ? '● Inscrite' : '✓ Passée'}
               </span>
             </div>
-            <small>{dateSeance(seance)} · {heureSeance(seance)} · {seance.place}</small>
+            <small>{dateTexte(seance)} · {heureSeance(seance)} · {seance.place}</small>
             <small>{organisateur?.firstName} (organise)</small>
           </Link>
         ))}

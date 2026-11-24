@@ -7,32 +7,11 @@ import PlanSeances from '../../components/PlanSeances'
 import { lireProfil } from '../../services/profil'
 import { lireSeances } from '../../services/seances'
 import { lireUtilisateur } from '../../services/session'
-import { libelleSport, NOMS_COURTS } from '../../utils/constants'
+import { nomCourt } from '../../utils/constants'
 import FeuilleFiltres from './FeuilleFiltres'
-import { FILTRES_VIDES, GROUPES, libelleChoix, passeLesFiltres } from './filtres'
-import '../../styles/theme-v2.css'
+import { bonEndroit, bonSport, FILTRES_VIDES, GROUPES, libelleChoix, passeLesFiltres, phraseRien } from './filtres'
+import '../../styles/theme.css'
 import './seances.css'
-
-// 'Vélo' → 'velo' (pour chercher sans se soucier des accents ni des majuscules)
-const simplifier = (texte) =>
-  texte
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase()
-
-// Le texte tapé est-il dans un de ces textes ?
-function contient(textes, cherche) {
-  return textes.some((texte) => texte && simplifier(texte).includes(simplifier(cherche.trim())))
-}
-
-// « Quel sport ? » : on cherche seulement dans le nom du sport
-const bonSport = (seance, cherche) => contient([libelleSport(seance.sport), NOMS_COURTS[seance.sport]], cherche)
-
-// « Où ? » : on cherche seulement dans le lieu (titre, adresse, ville)
-const bonEndroit = (seance, cherche) => contient([seance.title, seance.place, seance.city], cherche)
-
-// « de padel », mais « d'escalade »
-const de = (mot) => (/^[aeiouyéèêh]/i.test(mot) ? `d'${mot}` : `de ${mot}`)
 
 // Petit dessin « parcours » (deux points reliés par un chemin) pour l'état vide
 function IconeParcours() {
@@ -61,85 +40,72 @@ export default function Seances() {
 
   const [seances, setSeances] = useState([])
   const [ville, setVille] = useState('')
-  const [chargement, setChargement] = useState(true)
-  const [erreur, setErreur] = useState(false)
+  const [etat, setEtat] = useState('chargement') // 'chargement', 'erreur' ou 'pret'
   const [essai, setEssai] = useState(0) // +1 à chaque « Réessayer »
 
-  const [recherche, setRecherche] = useState('') // texte tapé dans « Quel sport ? »
-  const [endroit, setEndroit] = useState('') // texte tapé dans « Où ? » (vide = autour de moi)
+  const [recherche, setRecherche] = useState('') // « Quel sport ? »
+  const [endroit, setEndroit] = useState('') // « Où ? » (vide = autour de moi)
   const [filtres, setFiltres] = useState({ ...FILTRES_VIDES, sports: sportDeLAccueil ? [sportDeLAccueil] : [] })
-  const [feuilleOuverte, setFeuilleOuverte] = useState(false) // la feuille « Filtres » est ouverte
-  const [vueCarte, setVueCarte] = useState(false) // true = les séances sur la carte, false = la liste
+  const [feuilleOuverte, setFeuilleOuverte] = useState(false)
+  const [vueCarte, setVueCarte] = useState(false)
   const [choisie, setChoisie] = useState(null) // id de la séance touchée sur la carte
-  const [alerte, setAlerte] = useState(false) // alerte « préviens-moi » activée (pas encore envoyée au serveur)
+  const [alerte, setAlerte] = useState(false) // pas encore envoyée au serveur
 
-  // Charger le profil (pour la ville) et les séances
   useEffect(() => {
     if (!id) return
-    setChargement(true)
-    setErreur(false)
+    setEtat('chargement')
     Promise.all([lireProfil(id), lireSeances()])
       .then(([profil, liste]) => {
         setVille(profil.city ?? '')
         setSeances(liste)
+        setEtat('pret')
       })
-      .catch(() => setErreur(true))
-      .finally(() => setChargement(false))
+      .catch(() => setEtat('erreur'))
   }, [id, essai])
 
-  // Fermer la feuille (useCallback : la même fonction à chaque affichage)
+  // useCallback : la feuille relance son effet (focus, Échap) quand onFermer change ;
+  // sans lui, chaque choix coché redonnerait le focus à la feuille.
   const fermerFeuille = useCallback(() => setFeuilleOuverte(false), [])
 
-  // Pas connecté : on va à la page de connexion
   if (!id) return <Navigate to="/connexion" replace />
+
+  const cherche = recherche.trim()
+  const lieu = endroit.trim()
+
+  // Les séances qui passent la recherche et les filtres, de la plus proche à la plus loin
+  const resultats = seances
+    .filter((s) => bonSport(s, cherche) && bonEndroit(s, lieu) && passeLesFiltres(s, filtres))
+    .sort((a, b) => a.distanceFromUserKm - b.distanceFromUserKm)
+  const aucune = resultats.length === 0
+  const une = resultats.length === 1
+  // Sur la carte : la séance touchée, sinon la plus proche
+  const seanceChoisie = resultats.find((s) => s.id === choisie) ?? resultats[0]
+
+  // Les pastilles des choix cochés (sports, puis chaque groupe de la feuille)
+  const coches = [
+    ...filtres.sports.map((sport) => ({ cle: 'sports', valeur: sport, texte: nomCourt(sport) })),
+    ...GROUPES.flatMap((g) => filtres[g.cle].map((v) => ({ cle: g.cle, valeur: v, texte: libelleChoix(g.cle, v) }))),
+  ]
 
   // Retire un choix coché (pastille sous « Où ? »)
   function retirer(cle, valeur) {
     setFiltres({ ...filtres, [cle]: filtres[cle].filter((v) => v !== valeur) })
   }
 
-  // « Voir toutes les séances » : on enlève tout
   function toutEffacer() {
     setRecherche('')
     setEndroit('')
     setFiltres(FILTRES_VIDES)
   }
 
-  // Les séances qui passent la recherche et les filtres, de la plus proche à la plus loin
-  const resultats = seances
-    .filter((s) => {
-      if (recherche.trim() && !bonSport(s, recherche)) return false
-      if (endroit.trim() && !bonEndroit(s, endroit)) return false
-      return passeLesFiltres(s, filtres)
-    })
-    .sort((a, b) => a.distanceFromUserKm - b.distanceFromUserKm)
-
-  // Les pastilles des choix cochés (sports, puis chaque groupe de la feuille)
-  const coches = [
-    ...filtres.sports.map((sport) => ({ cle: 'sports', valeur: sport, texte: NOMS_COURTS[sport] ?? libelleSport(sport) })),
-    ...GROUPES.flatMap((g) => filtres[g.cle].map((v) => ({ cle: g.cle, valeur: v, texte: libelleChoix(g.cle, v) }))),
-  ]
-
-  const quelqueChoseActif = recherche.trim() !== '' || endroit.trim() !== '' || coches.length > 0
-
-  // Phrase quand rien ne correspond : « Rien de padel dimanche matin avec ces critères. »
+  const quelqueChoseActif = cherche !== '' || lieu !== '' || coches.length > 0
   const unSeulJour = filtres.jours.length === 1
-  let criteres = 'Rien'
-  if (filtres.sports.length > 0) criteres += ` ${de(filtres.sports.map((s) => libelleSport(s).toLowerCase()).join(' ou '))}`
-  if (recherche.trim()) criteres += ` ${de(recherche.trim())}`
-  if (unSeulJour) criteres += ` ${filtres.jours[0]}`
-  if (filtres.jours.length === 2) criteres += ' ce week-end'
-  if (filtres.creneaux.length > 0) criteres += ` ${filtres.creneaux.join(' ou ')}`
-  if (endroit.trim()) criteres += ` à ${endroit.trim()}`
-  criteres += ' avec ces critères. Élargis ta recherche ou lance ta propre sortie'
-  if (!quelqueChoseActif) criteres = "Personne n'a encore proposé de séance. Lance la tienne"
-
-  // Compteur : « 3 séances » + « Triées par distance »
-  const nombreTexte = resultats.length === 1 ? '1 séance' : `${resultats.length} séances`
-  const triTexte = resultats.length === 1 ? 'Triée par distance' : 'Triées par distance'
+  const phraseVide = quelqueChoseActif
+    ? phraseRien(filtres, cherche, lieu)
+    : "Personne n'a encore proposé de séance. Lance la tienne"
 
   return (
-    <main id="contenu" className="page theme-v2">
+    <main id="contenu" className="page theme">
       <div className="seances__entete">
         <div>
           <h1 className="seances__titre">Séances</h1>
@@ -161,13 +127,11 @@ export default function Seances() {
         </button>
       </div>
 
-      {/* Feuille « Filtres » : sports, jour, créneau, niveau, distance & allure */}
       {feuilleOuverte && (
         <FeuilleFiltres filtres={filtres} setFiltres={setFiltres} nombre={resultats.length} onFermer={fermerFeuille} />
       )}
 
       <div className="seances__filtres">
-        {/* Recherche d'un sport (seulement les sports) */}
         <label htmlFor="recherche" className="visuellement-cache">
           Quel sport ?
         </label>
@@ -183,7 +147,6 @@ export default function Seances() {
           />
         </div>
 
-        {/* Recherche d'un endroit : parc, quartier, ville (vide = autour de moi) */}
         <label htmlFor="lieu" className="visuellement-cache">
           Où ? (vide : autour de moi{ville ? `, ${ville}` : ''})
         </label>
@@ -199,7 +162,6 @@ export default function Seances() {
               onChange={(e) => setEndroit(e.target.value)}
             />
           </div>
-          {/* Voir les séances sur une carte, ou revenir à la liste */}
           <button
             type="button"
             className={vueCarte ? 'seances__bouton-carte seances__bouton-carte--actif' : 'seances__bouton-carte'}
@@ -211,7 +173,7 @@ export default function Seances() {
           </button>
         </div>
 
-        {/* Pastilles : les choix cochés (toucher = retirer) */}
+        {/* Pastilles des choix cochés : toucher = retirer */}
         {coches.length > 0 && (
           <div className="seances__pastilles" role="group" aria-label="Filtres cochés">
             {coches.map((c) => (
@@ -232,14 +194,14 @@ export default function Seances() {
         )}
       </div>
 
-      {chargement && (
+      {etat === 'chargement' && (
         <p role="status" className="seances__chargement">
           Chargement…
         </p>
       )}
 
       {/* Chargement raté : les filtres restent au-dessus */}
-      {!chargement && erreur && (
+      {etat === 'erreur' && (
         <section className="seances__etat">
           <div className="seances__etat-rond seances__etat-rond--erreur">
             <Icone nom="croix" className="seances__etat-dessin" />
@@ -257,47 +219,45 @@ export default function Seances() {
         </section>
       )}
 
-      {!chargement && !erreur && (
+      {etat === 'pret' && (
         <>
           {/* Compteur annoncé à chaque changement (caché à l'écran s'il n'y a rien) */}
-          <p role="status" className={resultats.length === 0 ? 'visuellement-cache' : 'seances__compteur'}>
-            {resultats.length === 0 ? (
+          <p role="status" className={aucune ? 'visuellement-cache' : 'seances__compteur'}>
+            {aucune ? (
               'Aucune séance ne correspond à ta recherche.'
             ) : (
               <>
-                <strong className="seances__compteur-nombre">{nombreTexte}</strong>
+                <strong className="seances__compteur-nombre">{une ? '1 séance' : `${resultats.length} séances`}</strong>
                 <span className="visuellement-cache"> · </span>
-                <span>{triTexte}</span>
+                <span>{une ? 'Triée par distance' : 'Triées par distance'}</span>
               </>
             )}
           </p>
 
-          {/* Vue carte : les repères, et la séance touchée en dessous (la plus proche au départ) */}
-          {resultats.length > 0 && vueCarte && (
-            <div className="seances__vue-carte">
-              <PlanSeances
-                seances={resultats}
-                centre={[48.857, 2.38]} /* Est parisien : toutes les séances de Paris sont visibles */
-                zoom={12}
-                choisie={resultats.find((s) => s.id === choisie)?.id ?? resultats[0].id}
-                onChoisir={setChoisie}
-              />
-              <CarteSeance seance={resultats.find((s) => s.id === choisie) ?? resultats[0]} idUtilisateur={id} />
-            </div>
-          )}
+          {!aucune &&
+            (vueCarte ? (
+              <div className="seances__vue-carte">
+                <PlanSeances
+                  seances={resultats}
+                  centre={[48.857, 2.38]} /* Est parisien : toutes les séances de Paris sont visibles */
+                  zoom={12}
+                  choisie={seanceChoisie.id}
+                  onChoisir={setChoisie}
+                />
+                <CarteSeance seance={seanceChoisie} idUtilisateur={id} />
+              </div>
+            ) : (
+              <ul className="seances__liste">
+                {resultats.map((s) => (
+                  <li key={s.id}>
+                    <CarteSeance seance={s} idUtilisateur={id} />
+                  </li>
+                ))}
+              </ul>
+            ))}
 
-          {resultats.length > 0 && !vueCarte && (
-            <ul className="seances__liste">
-              {resultats.map((s) => (
-                <li key={s.id}>
-                  <CarteSeance seance={s} idUtilisateur={id} />
-                </li>
-              ))}
-            </ul>
-          )}
-
-          {/* Aucun résultat : on propose d'élargir, de proposer sa séance, ou d'être prévenu */}
-          {resultats.length === 0 && (
+          {/* Aucun résultat : élargir, proposer sa séance, ou être prévenu */}
+          {aucune && (
             <>
               <section className="seances__etat">
                 <div className="seances__etat-rond">
@@ -305,7 +265,7 @@ export default function Seances() {
                 </div>
                 <h2 className="seances__etat-titre">Aucune séance trouvée</h2>
                 <p className="seances__etat-texte">
-                  {criteres} : d&apos;autres sportifs te rejoindront.
+                  {phraseVide} : d&apos;autres sportifs te rejoindront.
                 </p>
                 <div className="seances__actions">
                   {unSeulJour && (
@@ -324,7 +284,6 @@ export default function Seances() {
                 </div>
               </section>
 
-              {/* Alerte : toucher l'active (ou la coupe) */}
               <button
                 type="button"
                 className="seances__alerte"
@@ -332,15 +291,10 @@ export default function Seances() {
                 onClick={() => setAlerte(!alerte)}
               >
                 <Icone nom="cloche" className="icone seances__alerte-icone" />
-                {alerte ? (
-                  <span>
-                    <strong>Alerte activée ✓</strong> — on te prévient dès qu&apos;une séance correspond.
-                  </span>
-                ) : (
-                  <span>
-                    <strong>Active l&apos;alerte</strong> : on te prévient dès qu&apos;une séance correspond.
-                  </span>
-                )}
+                <span>
+                  <strong>{alerte ? 'Alerte activée ✓' : "Active l'alerte"}</strong>
+                  {`${alerte ? ' — ' : ' : '}on te prévient dès qu'une séance correspond.`}
+                </span>
               </button>
             </>
           )}

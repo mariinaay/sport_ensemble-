@@ -26,7 +26,6 @@ const TITRES = {
   '/aide': 'Aide & contact',
   '/seances': 'Séances',
   '/proposer': 'Proposer une séance',
-  '/messages': 'Messages',
   '/mes-seances': 'Mes séances',
   '/profil/avis': 'Mes avis reçus',
 }
@@ -34,7 +33,6 @@ const TITRES = {
 // Pages sans barre du bas (on n'est pas encore connecté)
 const PAGES_SANS_BARRE = ['/', '/connexion', '/inscription', '/mot-de-passe-oublie']
 
-// Page vide (pas encore codée) : seulement son titre
 function PageVide({ titre }) {
   return (
     <main id="contenu" className="page">
@@ -50,6 +48,7 @@ export default function App() {
     document.title = `${TITRES[pathname] ?? 'Page'} · Sport Ensemble`
   }, [pathname])
 
+  // La fiche séance et sa confirmation ont leurs propres boutons en bas : pas de barre non plus
   const avecBarre = !PAGES_SANS_BARRE.includes(pathname) && !/^\/seances\/\d+/.test(pathname)
 
   return (
@@ -69,13 +68,12 @@ export default function App() {
         <Route path="/accueil" element={<AccueilConnecte />} />
         {/* key : la page repart de zéro quand on arrive d'une tuile sport (?sport=…) */}
         <Route path="/seances" element={<Seances key={search} />} />
-
-        {/* Pages pas encore codées */}
         <Route path="/seances/:id" element={<FicheSeance />} />
         <Route path="/seances/:id/confirmation" element={<Confirmation />} />
-        <Route path="/messages" element={<PageVide titre="Messages" />} />
-        <Route path="/proposer" element={<PageVide titre="Proposer une séance" />} />
         <Route path="/mes-seances" element={<MesSeances />} />
+
+        {/* Pages pas encore codées */}
+        <Route path="/proposer" element={<PageVide titre="Proposer une séance" />} />
         <Route path="/profil/avis" element={<PageVide titre="Mes avis reçus" />} />
 
         {/* Adresse inconnue : retour à l'accueil */}

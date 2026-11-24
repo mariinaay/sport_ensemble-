@@ -1,45 +1,34 @@
-import { useState } from 'react'
 import Bouton from '../../components/Bouton'
 import Champ from '../../components/Champ'
 import Message from '../../components/Message'
 import { changerMotDePasse } from '../../services/profil'
 import { estMotDePasseValide, MESSAGES } from '../../utils/validation'
+import useFormulaire from '../compte/useFormulaire'
+
+const VIDE = { motDePasseActuel: '', nouveauMotDePasse: '', confirmation: '' }
 
 // Changer son mot de passe
 export default function FormulaireMotDePasse({ profil }) {
-  const [actuel, setActuel] = useState('')
-  const [nouveau, setNouveau] = useState('')
-  const [confirmation, setConfirmation] = useState('')
-  const [erreurs, setErreurs] = useState({})
-  const [envoi, setEnvoi] = useState(false)
-  const [succes, setSucces] = useState(false)
+  const { valeurs, setValeurs, erreurs, envoi, succes, changer, soumettre } = useFormulaire(VIDE)
+  const { motDePasseActuel, nouveauMotDePasse, confirmation } = valeurs
 
-  async function envoyer(e) {
+  function envoyer(e) {
     e.preventDefault()
-    setSucces(false)
-
-    // 1. Vérifier les champs
     const nouvellesErreurs = {}
-    if (!actuel) nouvellesErreurs.motDePasseActuel = 'Saisis ton mot de passe actuel.'
-    if (!estMotDePasseValide(nouveau)) nouvellesErreurs.nouveauMotDePasse = MESSAGES.motDePasse
-    else if (nouveau === actuel) nouvellesErreurs.nouveauMotDePasse = 'Choisis un mot de passe différent de l’actuel.'
-    if (confirmation !== nouveau) nouvellesErreurs.confirmation = 'Les deux mots de passe ne sont pas identiques.'
-    setErreurs(nouvellesErreurs)
-    if (Object.keys(nouvellesErreurs).length > 0) return
-
-    // 2. Enregistrer dans le back
-    setEnvoi(true)
-    try {
-      await changerMotDePasse(profil.id, actuel, nouveau)
-      setActuel('')
-      setNouveau('')
-      setConfirmation('')
-      setSucces(true)
-    } catch (erreur) {
-      // Erreur sous le champ concerné, sinon en haut
-      setErreurs({ [erreur.champ ?? 'serveur']: erreur.message })
+    if (!motDePasseActuel) nouvellesErreurs.motDePasseActuel = 'Saisis ton mot de passe actuel.'
+    if (!estMotDePasseValide(nouveauMotDePasse)) {
+      nouvellesErreurs.nouveauMotDePasse = MESSAGES.motDePasse
+    } else if (nouveauMotDePasse === motDePasseActuel) {
+      nouvellesErreurs.nouveauMotDePasse = 'Choisis un mot de passe différent de l’actuel.'
     }
-    setEnvoi(false)
+    if (confirmation !== nouveauMotDePasse) {
+      nouvellesErreurs.confirmation = 'Les deux mots de passe ne sont pas identiques.'
+    }
+
+    soumettre(nouvellesErreurs, async () => {
+      await changerMotDePasse(profil.id, motDePasseActuel, nouveauMotDePasse)
+      setValeurs(VIDE)
+    })
   }
 
   return (
@@ -53,8 +42,8 @@ export default function FormulaireMotDePasse({ profil }) {
         label="Mot de passe actuel"
         type="password"
         obligatoire
-        value={actuel}
-        onChange={(e) => setActuel(e.target.value)}
+        value={motDePasseActuel}
+        onChange={changer}
         erreur={erreurs.motDePasseActuel}
       />
       <Champ
@@ -62,8 +51,8 @@ export default function FormulaireMotDePasse({ profil }) {
         label="Nouveau mot de passe (8 caractères minimum)"
         type="password"
         obligatoire
-        value={nouveau}
-        onChange={(e) => setNouveau(e.target.value)}
+        value={nouveauMotDePasse}
+        onChange={changer}
         erreur={erreurs.nouveauMotDePasse}
       />
       <Champ
@@ -72,7 +61,7 @@ export default function FormulaireMotDePasse({ profil }) {
         type="password"
         obligatoire
         value={confirmation}
-        onChange={(e) => setConfirmation(e.target.value)}
+        onChange={changer}
         erreur={erreurs.confirmation}
       />
 

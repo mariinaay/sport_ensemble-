@@ -1,44 +1,30 @@
-import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Bouton from '../../components/Bouton'
 import Champ from '../../components/Champ'
 import Message from '../../components/Message'
 import { inscrire } from '../../services/compte'
-import { estEmailValide, estMotDePasseValide, MESSAGES } from '../../utils/validation'
 import { sauverUtilisateur } from '../../services/session'
+import { estEmailValide, estMotDePasseValide, MESSAGES } from '../../utils/validation'
+import useFormulaire from './useFormulaire'
 import './compte.css'
 
 export default function Inscription() {
   const navigate = useNavigate()
-  const [prenom, setPrenom] = useState('')
-  const [nom, setNom] = useState('')
-  const [email, setEmail] = useState('')
-  const [motDePasse, setMotDePasse] = useState('')
-  const [erreurs, setErreurs] = useState({})
-  const [envoi, setEnvoi] = useState(false)
+  const { valeurs, erreurs, envoi, changer, soumettre } = useFormulaire({ prenom: '', nom: '', email: '', motDePasse: '' })
+  const { prenom, nom, email, motDePasse } = valeurs
 
-  async function envoyer(e) {
+  function envoyer(e) {
     e.preventDefault()
-
-    // 1. Vérifier les champs
     const nouvellesErreurs = {}
     if (!prenom.trim()) nouvellesErreurs.prenom = MESSAGES.prenom
     if (!nom.trim()) nouvellesErreurs.nom = MESSAGES.nom
     if (!estEmailValide(email)) nouvellesErreurs.email = MESSAGES.email
     if (!estMotDePasseValide(motDePasse)) nouvellesErreurs.motDePasse = MESSAGES.motDePasse
-    setErreurs(nouvellesErreurs)
-    if (Object.keys(nouvellesErreurs).length > 0) return
 
-    // 2. Demander au back
-    setEnvoi(true)
-    try {
+    soumettre(nouvellesErreurs, async () => {
       sauverUtilisateur(await inscrire(prenom, nom, email, motDePasse))
       navigate('/accueil')
-    } catch (erreur) {
-      // Erreur sous le champ concerné, sinon en haut
-      setErreurs({ [erreur.champ ?? 'serveur']: erreur.message })
-      setEnvoi(false)
-    }
+    })
   }
 
   return (
@@ -52,29 +38,15 @@ export default function Inscription() {
       <form onSubmit={envoyer} noValidate>
         <Message type="erreur">{erreurs.serveur}</Message>
 
-        <Champ
-          id="prenom"
-          label="Prénom"
-          obligatoire
-          value={prenom}
-          onChange={(e) => setPrenom(e.target.value)}
-          erreur={erreurs.prenom}
-        />
-        <Champ
-          id="nom"
-          label="Nom"
-          obligatoire
-          value={nom}
-          onChange={(e) => setNom(e.target.value)}
-          erreur={erreurs.nom}
-        />
+        <Champ id="prenom" label="Prénom" obligatoire value={prenom} onChange={changer} erreur={erreurs.prenom} />
+        <Champ id="nom" label="Nom" obligatoire value={nom} onChange={changer} erreur={erreurs.nom} />
         <Champ
           id="email"
           label="Email"
           type="email"
           obligatoire
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={changer}
           erreur={erreurs.email}
         />
         <Champ
@@ -83,7 +55,7 @@ export default function Inscription() {
           type="password"
           obligatoire
           value={motDePasse}
-          onChange={(e) => setMotDePasse(e.target.value)}
+          onChange={changer}
           erreur={erreurs.motDePasse}
         />
 

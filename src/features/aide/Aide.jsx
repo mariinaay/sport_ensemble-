@@ -7,7 +7,6 @@ import { envoyerMessage } from '../../services/aide'
 import { estEmailValide, MESSAGES } from '../../utils/validation'
 import './aide.css'
 
-// Les questions fréquentes (question + réponse)
 const QUESTIONS = [
   {
     question: 'Comment rejoindre une séance ?',
@@ -36,12 +35,14 @@ const QUESTIONS = [
 ]
 
 export default function Aide() {
-  const [email, setEmail] = useState('')
-  const [sujet, setSujet] = useState('')
-  const [message, setMessage] = useState('')
+  const [champs, setChamps] = useState({ email: '', sujet: '', message: '' })
   const [erreurs, setErreurs] = useState({})
   const [envoi, setEnvoi] = useState(false)
   const [envoye, setEnvoye] = useState(false)
+  const { email, sujet, message } = champs
+
+  // Le même pour les 3 champs : l'id du champ (email, sujet ou message) dit quoi modifier
+  const changer = (e) => setChamps({ ...champs, [e.target.id]: e.target.value })
 
   async function envoyer(e) {
     e.preventDefault()
@@ -83,7 +84,6 @@ export default function Aide() {
         </div>
       </section>
 
-      {/* Formulaire de contact */}
       <section aria-labelledby="titre-contact" className="contact">
         <h2 id="titre-contact">Nous écrire</h2>
 
@@ -94,37 +94,11 @@ export default function Aide() {
             <p>Tu n’as pas trouvé ta réponse ? Écris-nous.</p>
             <Message type="erreur">{erreurs.serveur}</Message>
 
-            <Champ
-              id="email"
-              label="Ton email"
-              type="email"
-              obligatoire
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              erreur={erreurs.email}
-            />
-            <Champ
-              id="sujet"
-              label="Sujet"
-              obligatoire
-              value={sujet}
-              onChange={(e) => setSujet(e.target.value)}
-              erreur={erreurs.sujet}
-            />
-            <Champ
-              id="message"
-              label="Message"
-              multiligne
-              rows={5}
-              obligatoire
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              erreur={erreurs.message}
-            />
+            <Champ id="email" label="Ton email" type="email" obligatoire value={email} onChange={changer} erreur={erreurs.email} />
+            <Champ id="sujet" label="Sujet" obligatoire value={sujet} onChange={changer} erreur={erreurs.sujet} />
+            <Champ id="message" label="Message" multiligne rows={5} obligatoire value={message} onChange={changer} erreur={erreurs.message} />
 
-            <Bouton type="submit" chargement={envoi}>
-              Envoyer
-            </Bouton>
+            <Bouton type="submit" chargement={envoi}>Envoyer</Bouton>
           </form>
         )}
       </section>
