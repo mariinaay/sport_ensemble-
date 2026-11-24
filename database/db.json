@@ -184,6 +184,25 @@
       "verifiedOnly": false,
       "lat": 48.4163,
       "lng": 2.7253
+    },
+    {
+      "sport": "course",
+      "title": "Buttes-Chaumont",
+      "date": "2026-12-06",
+      "time": "09:00",
+      "place": "Entrée Botzaris, Buttes-Chaumont",
+      "city": "Paris 19e",
+      "distanceFromUserKm": 0.8,
+      "level": "debutant",
+      "pace": "6:30",
+      "distanceKm": 5,
+      "durationMin": 35,
+      "capacity": 4,
+      "organizerId": 2,
+      "verifiedOnly": true,
+      "lat": 48.8809,
+      "lng": 2.3833,
+      "id": 6
     }
   ],
   "registrations": [
@@ -211,6 +230,16 @@
       "id": 5,
       "sessionId": 2,
       "userId": 4
+    },
+    {
+      "sessionId": 6,
+      "userId": 1,
+      "id": 8
+    },
+    {
+      "sessionId": 6,
+      "userId": 3,
+      "id": 9
     }
   ],
   "messages": []

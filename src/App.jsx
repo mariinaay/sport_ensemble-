@@ -10,6 +10,9 @@ import MotDePasseOublie from './features/compte/MotDePasseOublie'
 import Notifications from './features/profil/Notifications'
 import Profil from './features/profil/Profil'
 import Seances from './features/seances/Seances'
+import FicheSeance from './features/seances/FicheSeance'
+import Confirmation from './features/seances/Confirmation'
+import MesSeances from './features/seances/MesSeances'
 
 // Le titre de l'onglet du navigateur pour chaque page (annoncé par les lecteurs d'écran)
 const TITRES = {
@@ -47,7 +50,7 @@ export default function App() {
     document.title = `${TITRES[pathname] ?? 'Page'} · Sport Ensemble`
   }, [pathname])
 
-  const avecBarre = !PAGES_SANS_BARRE.includes(pathname)
+  const avecBarre = !PAGES_SANS_BARRE.includes(pathname) && !/^\/seances\/\d+/.test(pathname)
 
   return (
     <div className={avecBarre ? 'app app--avec-barre' : 'app'}>
@@ -68,10 +71,11 @@ export default function App() {
         <Route path="/seances" element={<Seances key={search} />} />
 
         {/* Pages pas encore codées */}
-        <Route path="/seances/:id" element={<PageVide titre="Détail de la séance" />} />
+        <Route path="/seances/:id" element={<FicheSeance />} />
+        <Route path="/seances/:id/confirmation" element={<Confirmation />} />
         <Route path="/messages" element={<PageVide titre="Messages" />} />
         <Route path="/proposer" element={<PageVide titre="Proposer une séance" />} />
-        <Route path="/mes-seances" element={<PageVide titre="Mes séances" />} />
+        <Route path="/mes-seances" element={<MesSeances />} />
         <Route path="/profil/avis" element={<PageVide titre="Mes avis reçus" />} />
 
         {/* Adresse inconnue : retour à l'accueil */}
