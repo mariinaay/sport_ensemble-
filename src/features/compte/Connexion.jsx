@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Bouton from '../../components/Bouton'
 import Champ from '../../components/Champ'
 import Message from '../../components/Message'
@@ -10,6 +10,7 @@ import './compte.css'
 
 export default function Connexion() {
   const navigate = useNavigate()
+  const { state } = useLocation()
   const [email, setEmail] = useState('')
   const [motDePasse, setMotDePasse] = useState('')
   const [erreurs, setErreurs] = useState({})
@@ -29,7 +30,7 @@ export default function Connexion() {
     setEnvoi(true)
     try {
       sauverUtilisateur(await connecter(email, motDePasse))
-      navigate('/accueil')
+      navigate(state?.retour || '/accueil')
     } catch (erreur) {
       setErreurs({ serveur: erreur.message })
       setEnvoi(false)
