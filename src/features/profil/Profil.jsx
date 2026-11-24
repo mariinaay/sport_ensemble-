@@ -14,15 +14,16 @@ export default function Profil() {
   const navigate = useNavigate()
   const id = lireUtilisateur()?.id
 
-  const [profil, setProfil] = useState(null)
-  const [erreur, setErreur] = useState('')
-  const [essai, setEssai] = useState(0) // +1 à chaque « Réessayer »
-  const [ouverte, setOuverte] = useState(null) // rubrique dépliée : 'infos', 'securite' ou null
-  const [confirmer, setConfirmer] = useState(false)
+  const [profil, setProfil] = useState(null) // les infos de l'utilisateur
+  const [erreur, setErreur] = useState('') // le message d'erreur
+  const [essai, setEssai] = useState(0) // augmente quand on clique sur « Réessayer »
+  const [ouverte, setOuverte] = useState(null) // la partie du menu qui est ouverte
+  const [confirmer, setConfirmer] = useState(false) // true quand on demande de confirmer la déconnexion
 
-  // Ni profil ni erreur : la réponse du back n'est pas encore arrivée
+  // On attend la réponse du serveur
   const chargement = !profil && !erreur
 
+  // Charge le profil depuis l'API
   useEffect(() => {
     if (!id) return
     setErreur('')
@@ -31,17 +32,18 @@ export default function Profil() {
       .catch((e) => setErreur(e.message))
   }, [id, essai])
 
-  // Ouvre ou ferme une rubrique (une seule ouverte à la fois)
+  // Ouvre ou ferme une partie du menu
   function basculer(nom) {
     setOuverte(ouverte === nom ? null : nom)
   }
 
+  // Déconnecte l'utilisateur et revient à l'accueil
   function deconnecter() {
     oublierUtilisateur()
     navigate('/')
   }
 
-  // Pas connecté : on va à la page de connexion
+  // Si on n'est pas connecté, on va à la page de connexion
   if (!id) return <Navigate to="/connexion" replace />
 
   return (
@@ -52,7 +54,7 @@ export default function Profil() {
 
       {profil && (
         <>
-          {/* En-tête : avatar, nom, email, ville, fiabilité */}
+          {/* Haut de la page : photo, nom, email, ville */}
           <section className="profil">
             <div className="profil__avatar-cadre">
               <div className="profil__avatar" aria-hidden="true">
@@ -72,6 +74,7 @@ export default function Profil() {
             )}
           </section>
 
+          {/* Menu du profil */}
           <ul className="menu-profil">
             <li>
               <LigneMenu icone="calendrier" titre="Mes séances" sousTitre="À venir · Passées" to="/mes-seances" />
@@ -94,7 +97,7 @@ export default function Profil() {
                 onClick={() => basculer('securite')}
                 ouvert={ouverte === 'securite'}
               />
-              {/* Deux formulaires indépendants */}
+              {/* Formulaires pour changer l'email et le mot de passe */}
               {ouverte === 'securite' && (
                 <>
                   <FormulaireEmail profil={profil} onEnregistre={setProfil} />
@@ -113,7 +116,7 @@ export default function Profil() {
             </li>
           </ul>
 
-          {/* Déconnexion, avec confirmation */}
+          {/* Bouton de déconnexion (on demande de confirmer) */}
           <div className="profil__deconnexion">
             {confirmer ? (
               <>

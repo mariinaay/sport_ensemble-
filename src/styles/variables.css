@@ -2,8 +2,8 @@
    Aucune couleur, espacement ou rayon en dur dans les composants. */
 :root {
   /* Couleurs */
-  --couleur-primaire: #ff5a1f; /* orange « accent » : boutons, bouton Proposer */
-  --couleur-primaire-fonce: #e84a12;
+  --couleur-primaire: #cc4410; /* orange « accent » : boutons, bouton Proposer (assez foncé pour le texte blanc) */
+  --couleur-primaire-fonce: #a8380b; /* survol des boutons */
   --couleur-primaire-doux: #ffe7dc; /* fond orange clair (onglet actif, pastille d'icône) */
   --couleur-primaire-texte: #b53a0c; /* orange foncé lisible pour les liens et petits textes */
   --couleur-encre: #15171c; /* fond des cartes sombres */
@@ -14,7 +14,7 @@
   --couleur-texte-secondaire: #5b5f68; /* contraste >= 4,5:1 sur le fond */
   --couleur-texte-tertiaire: #8e929a; /* uniquement pour les éléments décoratifs */
   --couleur-bordure: #e2ddd2;
-  --couleur-erreur: #cf3b2f;
+  --couleur-erreur: #b42318;
   --couleur-erreur-fond: #fbe4e1;
   --couleur-succes: #1b6e3a;
   --couleur-succes-fond: #e3f3e8;

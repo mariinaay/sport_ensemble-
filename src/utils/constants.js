@@ -40,7 +40,7 @@ export const NOTIFICATIONS = [
 export const NIVEAUX = {
   debutant: 'Débutant',
   intermediaire: 'Intermédiaire',
-  confirme: 'Confirmé',
+  expert: 'Expert',
 }
 
 // Date de démo : les séances de db.json sont en octobre 2026, on fait comme si on était le 16 octobre au soir

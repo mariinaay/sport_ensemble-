@@ -9,16 +9,17 @@ import { dateSeance, libelleSport } from '../../utils/constants'
 import '../../styles/theme.css'
 import './mes-pages.css'
 
-// Format des dates .ics : 20261018T070000Z (heure UTC, sans tirets, deux-points ni millisecondes)
+// Met la date au format du fichier calendrier
 const formatIcs = (date) => date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')
 
-// Dans un .ics, \ , ; et les retours à la ligne doivent être échappés
+// Enlève les caractères qui posent problème dans le fichier calendrier
 const echapper = (texte) => texte.replace(/\\/g, '\\\\').replace(/[,;]/g, '\\$&').replace(/\n/g, '\\n')
 
-// Télécharge un fichier .ics, que le téléphone ou l'ordinateur ajoute à son agenda
+// Télécharge la séance pour l'ajouter à son agenda
 function telechargerCalendrier(seance) {
   const debut = dateSeance(seance)
   const fin = new Date(debut.getTime() + (seance.durationMin || 60) * 60000)
+  // Contenu du fichier calendrier
   const contenu = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
@@ -34,6 +35,7 @@ function telechargerCalendrier(seance) {
     'END:VCALENDAR',
   ].join('\r\n')
 
+  // Crée le fichier et lance le téléchargement
   const url = URL.createObjectURL(new Blob([contenu], { type: 'text/calendar;charset=utf-8' }))
   const lien = document.createElement('a')
   lien.href = url
@@ -46,8 +48,9 @@ export default function Confirmation() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { donnees, erreur, setErreur, charger } = useSeance(id)
-  const [envoi, setEnvoi] = useState(false)
+  const [envoi, setEnvoi] = useState(false) // true pendant l'annulation
 
+  // Pendant le chargement ou en cas d'erreur
   if (!donnees) {
     return (
       <main id="contenu" className="page">
@@ -57,8 +60,10 @@ export default function Confirmation() {
   }
 
   const { seance, organisateur } = donnees
+  // On cherche l'inscription de l'utilisateur à cette séance
   const inscription = donnees.inscriptions.find((i) => i.userId === lireUtilisateur()?.id)
 
+  // Si l'utilisateur n'est pas inscrit
   if (!inscription) {
     return (
       <main id="contenu" className="page">
@@ -69,6 +74,7 @@ export default function Confirmation() {
     )
   }
 
+  // Annule la place et revient à « Mes séances »
   async function annuler() {
     if (!window.confirm('Annuler ta place pour cette séance ?')) return
     setEnvoi(true)
@@ -91,6 +97,7 @@ export default function Confirmation() {
         <h1>C’est réservé !</h1>
         <p className="texte-secondaire">Ta place est réservée. On se retrouve bientôt !</p>
 
+        {/* Résumé de la séance : date, lieu, sport */}
         <div className="carte recapitulatif">
           <p><Icone nom="calendrier" />{dateTexte(seance, { weekday: 'long', day: 'numeric', month: 'long' })} · {heureSeance(seance)}</p>
           <p><span aria-hidden="true">⌖</span>{seance.place}</p>
@@ -101,6 +108,7 @@ export default function Confirmation() {
         <EtatChargement erreur={erreur} onReessayer={charger} />
       </div>
 
+      {/* Boutons en bas de la page */}
       <div className="actions-seance">
         <Bouton onClick={() => telechargerCalendrier(seance)}>Ajouter au calendrier</Bouton>
         <button className="annuler-place" type="button" disabled={envoi} onClick={annuler}>Annuler ma place</button>

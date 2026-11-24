@@ -28,7 +28,7 @@ export const GROUPES = [
     choix: [
       { value: 'debutant', label: 'Débutant' },
       { value: 'intermediaire', label: 'Intermédiaire' },
-      { value: 'confirme', label: 'Confirmé' },
+      { value: 'expert', label: 'Expert' },
     ],
   },
   {
