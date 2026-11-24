@@ -1,0 +1,133 @@
+/* Carte d'une séance (accueil + liste des séances) — design V2 (dans .theme-v2) */
+.carte-seance {
+  display: block;
+  padding: var(--espace-4);
+  border: 1px solid var(--v2-bordure);
+  border-radius: var(--v2-rayon);
+  background: var(--v2-surface);
+  box-shadow: var(--v2-ombre);
+  color: var(--v2-encre);
+  text-decoration: none;
+}
+.carte-seance:hover .carte-seance__titre {
+  text-decoration: underline;
+}
+
+/* Date orange à gauche, distance grise à droite */
+.carte-seance__haut {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espace-1) var(--espace-2);
+}
+.carte-seance__date {
+  color: var(--v2-orange-texte);
+  font-size: var(--taille-petite);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.carte-seance__distance {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espace-1);
+  padding: var(--espace-1) var(--espace-2);
+  border-radius: var(--rayon-rond);
+  background: var(--v2-fond);
+  color: var(--v2-texte-2);
+  font-size: var(--taille-petite);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.carte-seance__titre {
+  margin: var(--espace-1) 0 var(--espace-2);
+  font-size: 1.1875rem;
+}
+
+.carte-seance__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-2) var(--espace-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--v2-encre);
+  font-size: var(--taille-petite);
+}
+.carte-seance__details li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espace-1);
+}
+.carte-seance__details .icone {
+  color: var(--v2-texte-2);
+}
+.carte-seance__details .etiquette-sport .icone {
+  color: var(--sport);
+}
+
+/* Bas de la carte : séparé par un trait fin */
+.carte-seance__bas {
+  display: flex;
+  align-items: center;
+  gap: var(--espace-2);
+  margin-top: var(--espace-3);
+  padding-top: var(--espace-3);
+  border-top: 1px solid var(--v2-bordure);
+  font-size: var(--taille-petite);
+}
+.carte-seance__places {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--espace-1);
+  color: var(--v2-texte-2);
+}
+.carte-seance__places--inscrit {
+  color: var(--v2-vert);
+  font-weight: 600;
+}
+
+/* Rond noir avec la flèche */
+.carte-seance__fleche {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--rayon-rond);
+  background: var(--v2-encre);
+  color: var(--v2-surface);
+}
+
+/* « Complet » : pastille rouge pâle */
+.carte-seance__complet {
+  padding: var(--espace-1) var(--espace-3);
+  border-radius: var(--rayon-rond);
+  background: var(--v2-rouge-pale);
+  color: var(--v2-rouge);
+  font-weight: 700;
+}
+
+/* Ronds d'initiales orange pâle qui se chevauchent */
+.carte-seance__avatars {
+  display: flex;
+}
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 2px solid var(--v2-surface);
+  border-radius: var(--rayon-rond);
+  background: var(--v2-orange-pale);
+  color: var(--v2-orange-texte);
+  font-size: var(--taille-mini);
+  font-weight: 700;
+}
+.avatar + .avatar {
+  margin-left: calc(-1 * var(--espace-2));
+}

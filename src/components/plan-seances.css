@@ -1,0 +1,46 @@
+/* Carte des séances (page Séances + petite carte de l'accueil) */
+.plan {
+  overflow: hidden;
+  border: 1px solid var(--v2-bordure);
+  border-radius: var(--v2-rayon);
+  background: var(--v2-surface);
+}
+.plan__carte {
+  height: 22rem;
+  z-index: 0; /* reste sous la barre du bas */
+}
+.plan--petit .plan__carte {
+  height: 8rem;
+}
+
+/* Repère d'une séance : pastille de la couleur du sport (contour noir quand on l'a touchée) */
+.repere {
+  display: inline-block;
+  transform: translate(-50%, -50%);
+  padding: var(--espace-1) var(--espace-2);
+  border: 2px solid var(--v2-surface);
+  border-radius: var(--rayon-rond);
+  background: var(--sport, var(--v2-encre));
+  color: var(--v2-surface);
+  font-family: var(--v2-police);
+  font-size: var(--taille-petite);
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.repere--choisi {
+  outline: 3px solid var(--v2-encre);
+  z-index: 1;
+}
+
+/* « Toi » : point orange cerclé de blanc */
+.repere-moi {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  transform: translate(-50%, -50%);
+  border: 3px solid var(--v2-surface);
+  border-radius: var(--rayon-rond);
+  background: var(--v2-orange);
+  box-shadow: 0 0 0 4px rgba(240, 78, 18, 0.25);
+}

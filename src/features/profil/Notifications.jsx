@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 import Bouton from '../../components/Bouton'
 import EtatChargement from '../../components/EtatChargement'
 import LienRetour from '../../components/LienRetour'
@@ -13,6 +13,7 @@ import './profil.css'
 const PAR_DEFAUT = Object.fromEntries(NOTIFICATIONS.map((n) => [n.value, n.parDefaut]))
 
 export default function Notifications() {
+  const depuisAccueil = useLocation().state?.depuis === 'accueil'
   const id = lireUtilisateur()?.id
 
   const [choix, setChoix] = useState(PAR_DEFAUT)
@@ -57,7 +58,8 @@ export default function Notifications() {
 
   return (
     <main id="contenu" className="page">
-      <LienRetour to="/profil">Profil</LienRetour>
+      {/* Retour vers la page d'où l'on vient (Accueil via la cloche, sinon Profil) */}
+      {depuisAccueil ? <LienRetour to="/accueil">Accueil</LienRetour> : <LienRetour to="/profil">Profil</LienRetour>}
       <h1>Notifications</h1>
       <p className="notifications__intro">Choisis quand Sport Ensemble te prévient.</p>
 

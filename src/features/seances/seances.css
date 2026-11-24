@@ -1,0 +1,420 @@
+/* Page Séances, design V2 (orange + noir sur beige) : liste, erreur, aucune séance, feuille Filtres.
+   Couleurs : seulement les variables --v2-* de styles/theme-v2.css. */
+
+/* ---------- Titre + bouton des filtres ---------- */
+.seances__entete {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--espace-3);
+  margin-bottom: var(--espace-5);
+}
+.seances__titre {
+  margin: 0;
+  font-size: var(--taille-titre-1);
+  line-height: 1.1;
+}
+.seances__sous-titre {
+  margin: var(--espace-1) 0 0;
+  color: var(--v2-texte-2);
+  font-size: var(--taille-petite);
+}
+
+/* Bouton rond noir avec l'icône réglages blanche */
+.seances__bouton-filtres {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--hauteur-cible);
+  height: var(--hauteur-cible);
+  padding: 0;
+  border: none;
+  border-radius: var(--rayon-rond);
+  background: var(--v2-encre);
+  color: var(--v2-surface);
+  cursor: pointer;
+}
+
+/* Petit rond orange : combien de filtres sont cochés */
+.seances__nombre-filtres {
+  position: absolute;
+  top: calc(-1 * var(--espace-1));
+  right: calc(-1 * var(--espace-1));
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 var(--espace-1);
+  border: 2px solid var(--v2-fond);
+  border-radius: var(--rayon-rond);
+  background: var(--v2-orange-texte);
+  color: var(--v2-surface);
+  font-size: var(--taille-mini);
+  font-weight: 700;
+  line-height: 1.25rem;
+  box-sizing: content-box;
+}
+
+/* ---------- Recherche : sport, lieu, bouton Carte ---------- */
+.seances__filtres {
+  margin-bottom: var(--espace-4);
+}
+
+/* Champ avec son icône dedans, à gauche */
+.seances__lieu {
+  position: relative;
+  margin-bottom: var(--espace-3);
+}
+.seances__lieu-icone {
+  position: absolute;
+  left: var(--espace-4);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--v2-texte-2);
+  pointer-events: none;
+}
+.seances__lieu .seances__lieu-champ {
+  width: 100%;
+  padding-left: calc(var(--espace-4) + var(--espace-6));
+  padding-right: var(--espace-3);
+  text-overflow: ellipsis;
+}
+
+/* « Où ? » : le champ, et le bouton Carte / Liste à droite */
+.seances__ou {
+  display: flex;
+  align-items: center;
+  gap: var(--espace-2);
+  margin-bottom: var(--espace-3);
+}
+.seances__ou .seances__lieu {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+}
+.seances__bouton-carte {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--espace-1);
+  min-height: 3rem;
+  padding: 0 var(--espace-3);
+  border: 1px solid var(--v2-encre);
+  border-radius: var(--rayon-rond);
+  background: var(--v2-surface);
+  color: var(--v2-encre);
+  font: inherit;
+  font-size: var(--taille-petite);
+  font-weight: 700;
+  cursor: pointer;
+}
+.seances__bouton-carte--actif {
+  background: var(--v2-encre);
+  color: var(--v2-surface);
+}
+
+/* ---------- Pastilles de filtres (passent à la ligne) ---------- */
+.seances__pastilles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--espace-2);
+}
+/* Le bouton fait 44 px de haut (zone tactile), la pastille dessinée dedans est plus petite */
+.filtre {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--hauteur-cible);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--v2-encre);
+  font: inherit;
+  font-size: var(--taille-petite);
+  font-weight: 600;
+  cursor: pointer;
+}
+.filtre__forme {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espace-1);
+  min-height: 2.25rem;
+  padding: 0 var(--espace-3);
+  border: 1px solid var(--v2-bordure);
+  border-radius: var(--rayon-rond);
+  background: var(--v2-surface);
+}
+/* Filtre coché : fond noir, texte blanc */
+.filtre--coche .filtre__forme {
+  border-color: var(--v2-encre);
+  background: var(--v2-encre);
+  color: var(--v2-surface);
+}
+
+/* ---------- Compteur + liste ---------- */
+.seances__chargement {
+  color: var(--v2-texte-2);
+}
+.seances__compteur {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--espace-3);
+  margin: 0 0 var(--espace-3);
+  color: var(--v2-texte-2);
+  font-size: var(--taille-petite);
+}
+.seances__compteur-nombre {
+  color: var(--v2-encre);
+  font-family: var(--v2-police-titre);
+  font-size: var(--taille-base);
+  font-weight: 800;
+}
+.seances__liste {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espace-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---------- Vue carte ---------- */
+.seances__vue-carte {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espace-3);
+}
+
+/* ---------- Erreur ou aucune séance : grande carte blanche centrée ---------- */
+.seances__etat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: var(--espace-2);
+  padding: var(--espace-6) var(--espace-5) var(--espace-5);
+  border-radius: var(--v2-rayon-grand);
+  background: var(--v2-surface);
+  box-shadow: var(--v2-ombre);
+  text-align: center;
+}
+.seances__etat-rond {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin-bottom: var(--espace-4);
+  border-radius: var(--rayon-rond);
+  background: var(--v2-orange-pale);
+  color: var(--v2-orange-texte);
+}
+.seances__etat-rond--erreur {
+  background: var(--v2-rouge-pale);
+  color: var(--v2-rouge);
+}
+.seances__etat-dessin {
+  width: 2rem;
+  height: 2rem;
+}
+.seances__etat-titre {
+  margin: 0 0 var(--espace-2);
+  font-size: var(--taille-titre-2);
+}
+.seances__etat-texte {
+  margin: 0 0 var(--espace-5);
+  color: var(--v2-texte-2);
+  font-size: var(--taille-petite);
+  line-height: 1.5;
+}
+.seances__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espace-3);
+  width: 100%;
+}
+
+/* Bandeau « Active l'alerte » sous la carte (bouton à bascule) */
+.seances__alerte {
+  display: flex;
+  align-items: center;
+  gap: var(--espace-3);
+  width: 100%;
+  min-height: var(--hauteur-cible);
+  margin-top: var(--espace-4);
+  padding: var(--espace-3) var(--espace-4);
+  border: 1px solid transparent;
+  border-radius: var(--v2-rayon);
+  background: var(--v2-orange-pale);
+  color: var(--v2-encre);
+  font: inherit;
+  font-size: var(--taille-petite);
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+}
+.seances__alerte strong {
+  color: var(--v2-orange-texte);
+}
+.seances__alerte-icone {
+  color: var(--v2-orange-texte);
+}
+/* Alerte activée : contour orange */
+.seances__alerte[aria-pressed='true'] {
+  border-color: var(--v2-orange);
+}
+
+/* ---------- Feuille « Filtres » (monte du bas de l'écran) ---------- */
+.feuille-fond {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: var(--v2-voile);
+}
+.feuille {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  z-index: 21;
+  width: 100%;
+  max-width: var(--largeur-app);
+  max-height: 88vh;
+  overflow-y: auto;
+  transform: translateX(-50%);
+  padding: var(--espace-2) var(--espace-4) 0;
+  border-radius: var(--v2-rayon-grand) var(--v2-rayon-grand) 0 0;
+  background: var(--v2-surface);
+  color: var(--v2-encre);
+  animation: feuille-monte 0.25s ease-out;
+}
+.feuille:focus {
+  outline: none;
+}
+@keyframes feuille-monte {
+  from {
+    transform: translate(-50%, 100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .feuille {
+    animation: none;
+  }
+}
+
+/* Petite barre grise en haut (on voit que c'est une feuille) */
+.feuille__poignee {
+  display: block;
+  width: 2.5rem;
+  height: 0.25rem;
+  margin: 0 auto var(--espace-3);
+  border-radius: var(--rayon-rond);
+  background: var(--v2-bordure);
+}
+
+.feuille__entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--espace-3);
+}
+.feuille__entete h2 {
+  margin: 0;
+  font-size: var(--taille-titre-2);
+}
+.feuille__reinitialiser {
+  min-height: var(--hauteur-cible);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--v2-orange-texte);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Rangée des sports : défile sur le côté (dans la feuille seulement) */
+.feuille__sports {
+  display: flex;
+  gap: var(--espace-2);
+  margin: 0 calc(-1 * var(--espace-4)) var(--espace-4);
+  padding: var(--espace-1) var(--espace-4);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tuile-filtre {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espace-1);
+  flex-shrink: 0;
+  min-width: 4.75rem;
+  height: 4.75rem;
+  padding: 0 var(--espace-2);
+  border: 2px solid transparent;
+  border-radius: var(--v2-rayon);
+  background: var(--v2-fond);
+  color: var(--v2-encre);
+  font: inherit;
+  font-size: var(--taille-petite);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Un groupe : son titre, puis ses choix qui passent à la ligne */
+.feuille__groupe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-2);
+  min-width: 0;
+  margin: 0 0 var(--espace-4);
+  padding: 0;
+  border: 0;
+}
+.feuille__groupe legend {
+  margin-bottom: var(--espace-2);
+  padding: 0;
+  color: var(--v2-texte-2);
+  font-size: var(--taille-petite);
+  font-weight: 600;
+}
+.choix {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espace-1);
+  min-height: var(--hauteur-cible);
+  padding: var(--espace-2) var(--espace-4);
+  border: 2px solid transparent;
+  border-radius: var(--rayon-rond);
+  background: var(--v2-fond);
+  color: var(--v2-encre);
+  font: inherit;
+  font-size: var(--taille-petite);
+  font-weight: 600;
+  cursor: pointer;
+}
+.choix .icone {
+  color: var(--v2-orange-texte);
+}
+
+/* Tuile ou choix coché : fond orange pâle + contour orange */
+.tuile-filtre[aria-pressed='true'],
+.choix[aria-pressed='true'] {
+  border-color: var(--v2-orange);
+  background: var(--v2-orange-pale);
+  color: var(--v2-encre);
+}
+
+/* Bouton « Voir N séances » collé en bas de la feuille */
+.feuille__pied {
+  position: sticky;
+  bottom: 0;
+  margin: 0 calc(-1 * var(--espace-4));
+  padding: var(--espace-3) var(--espace-4) calc(var(--espace-5) + env(safe-area-inset-bottom));
+  background: var(--v2-surface);
+}
+
+/* Tuile de sport de la feuille Filtres : icône dans la couleur du sport */
+.tuile-filtre .icone {
+  color: var(--sport);
+}

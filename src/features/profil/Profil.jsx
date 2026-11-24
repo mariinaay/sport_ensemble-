@@ -61,11 +61,6 @@ export default function Profil() {
                 {profil.firstName[0]}
                 {profil.lastName[0]}
               </div>
-              {profil.verified && (
-                <span className="profil__badge" title="Profil vérifié">
-                  <Icone nom="verifie" className="icone icone--mini" />
-                </span>
-              )}
             </div>
             <h2>
               {profil.firstName} {profil.lastName}
@@ -75,7 +70,6 @@ export default function Profil() {
             {profil.reliability !== undefined && (
               <p className="profil__fiabilite">
                 Fiabilité : <strong>{profil.reliability} %</strong>
-                {profil.verified ? ' · Profil vérifié' : ' · Profil non vérifié'}
               </p>
             )}
           </section>

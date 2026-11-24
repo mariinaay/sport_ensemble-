@@ -88,6 +88,13 @@
       "verified": false,
       "sports": [],
       "id": 5
+    },
+    {
+      "firstName": "df",
+      "lastName": "sdf",
+      "email": "elodie.lin@efrei.net",
+      "password": "qsdsdsqsd",
+      "id": 6
     }
   ],
   "sessions": [
@@ -106,7 +113,9 @@
       "durationMin": 35,
       "capacity": 4,
       "organizerId": 2,
-      "verifiedOnly": true
+      "verifiedOnly": true,
+      "lat": 48.8809,
+      "lng": 2.3833
     },
     {
       "id": 2,
@@ -121,7 +130,9 @@
       "capacity": 4,
       "pricePerPerson": 9,
       "organizerId": 4,
-      "verifiedOnly": true
+      "verifiedOnly": true,
+      "lat": 48.8226,
+      "lng": 2.37
     },
     {
       "id": 3,
@@ -138,7 +149,9 @@
       "durationMin": 35,
       "capacity": 6,
       "organizerId": 3,
-      "verifiedOnly": false
+      "verifiedOnly": false,
+      "lat": 48.8712,
+      "lng": 2.3654
     },
     {
       "id": 4,
@@ -152,7 +165,9 @@
       "level": "intermediaire",
       "capacity": 8,
       "organizerId": 4,
-      "verifiedOnly": false
+      "verifiedOnly": false,
+      "lat": 48.8352,
+      "lng": 2.4058
     },
     {
       "id": 5,
@@ -166,7 +181,9 @@
       "level": "debutant",
       "capacity": 10,
       "organizerId": 3,
-      "verifiedOnly": false
+      "verifiedOnly": false,
+      "lat": 48.4163,
+      "lng": 2.7253
     }
   ],
   "registrations": [
