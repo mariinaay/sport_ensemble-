@@ -7,7 +7,7 @@
   flex-direction: column;
   justify-content: flex-end;
   gap: var(--espace-4);
-  padding: var(--espace-5) var(--espace-4) var(--espace-6);
+  padding: var(--espace-5) var(--espace-5) var(--espace-6);
   color: var(--couleur-sur-primaire);
   /* Photo (src/assets/img/accueil.jpg) sous un voile sombre qui garde le texte lisible */
   background-color: var(--splash-fond-secours);
@@ -23,15 +23,26 @@
   background-position: center top;
 }
 .splash__surtitre {
+  /* Étiquette orange « SPORT ENSEMBLE » (comme « Courir ensemble » sur la maquette) */
+  align-self: flex-start;
   margin: 0;
-  letter-spacing: 0.12em;
+  padding: 5px 10px;
+  border-radius: var(--rayon-rond);
+  background: var(--couleur-primaire);
+  letter-spacing: 1px;
+  line-height: 1.3;
   text-transform: uppercase;
-  font-size: var(--taille-petite);
-  font-weight: 600;
+  font-size: var(--taille-mini);
+  font-weight: 700;
 }
 .splash h1 {
   margin: 0;
-  font-size: 2.6rem;
+  font-size: 2.5rem;
+  line-height: 1.1;
+}
+.splash h1 + p {
+  margin: 0;
+  opacity: 0.8;
 }
 .splash__pastilles {
   display: flex;

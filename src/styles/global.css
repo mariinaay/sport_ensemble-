@@ -13,27 +13,41 @@ body {
   color: var(--couleur-texte);
   font-family: var(--police);
   font-size: var(--taille-base);
-  line-height: 1.5;
+  line-height: 1.4;
   overflow-x: hidden; /* pas de défilement horizontal à 320 px */
 }
 
+/* Titres : police « Bricolage Grotesque » (titres) et « DM Sans » (petits titres) */
 h1,
-h2,
-h3 {
-  line-height: 1.15;
+h2 {
   margin: 0 0 var(--espace-3);
+  font-family: var(--police-titre);
 }
 h1 {
   font-size: var(--taille-titre-1);
+  font-weight: 800;
+  line-height: 1.125;
+  letter-spacing: -0.6px;
 }
 h2 {
   font-size: var(--taille-titre-2);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.2px;
+}
+h3 {
+  margin: 0 0 var(--espace-3);
+  font-size: var(--taille-titre-3);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.1px;
 }
 p {
   margin: 0 0 var(--espace-3);
 }
 a {
-  color: var(--couleur-primaire);
+  color: var(--couleur-primaire-texte);
+  font-weight: 600;
 }
 
 /* Focus toujours visible au clavier */
@@ -81,15 +95,28 @@ a {
   display: inline-flex;
   align-items: center;
   min-height: var(--hauteur-cible);
-  margin-bottom: var(--espace-2);
+  margin-bottom: var(--espace-1);
+  color: var(--couleur-texte-secondaire);
+  font-size: var(--taille-petite);
   font-weight: 600;
   text-decoration: none;
+}
+.lien-retour:hover {
+  color: var(--couleur-texte);
 }
 
 /* Une page normale (toutes sauf l'accueil) */
 .page {
   flex: 1;
-  padding: var(--espace-5) var(--espace-4);
+  padding: var(--espace-5);
+}
+/* Sous le grand titre : texte d'introduction en gris */
+.page > h1 + p {
+  margin-bottom: var(--espace-5);
+  color: var(--couleur-texte-secondaire);
+}
+.page section + section {
+  margin-top: var(--espace-5);
 }
 
 /* ---------- Champ de formulaire ---------- */
@@ -98,7 +125,7 @@ a {
 }
 .champ label {
   display: block;
-  margin-bottom: var(--espace-1);
+  margin-bottom: var(--espace-2);
   font-weight: 600;
 }
 /* Étoile « champ obligatoire » */
@@ -107,16 +134,23 @@ a {
 }
 .champ__input {
   width: 100%;
-  min-height: var(--hauteur-cible);
-  padding: var(--espace-2) var(--espace-3);
-  border: 2px solid var(--couleur-bordure);
+  min-height: var(--hauteur-bouton);
+  padding: var(--espace-3) var(--espace-4);
+  border: 1px solid var(--couleur-bordure);
   border-radius: var(--rayon-moyen);
   background: var(--couleur-surface);
   color: var(--couleur-texte);
   font: inherit;
 }
+.champ__input:hover {
+  border-color: var(--couleur-texte-tertiaire);
+}
+.champ__input:focus {
+  border-color: var(--couleur-texte);
+}
 .champ__input[aria-invalid='true'] {
   border-color: var(--couleur-erreur);
+  background: var(--couleur-erreur-fond);
 }
 .champ__erreur {
   margin: var(--espace-1) 0 0;
@@ -131,6 +165,7 @@ a {
   border-radius: var(--rayon-moyen);
   background: var(--couleur-erreur-fond);
   color: var(--couleur-erreur);
+  font-weight: 500;
 }
 /* Message vert (ex. « Modifications enregistrées ») */
 .message-succes {
@@ -138,6 +173,7 @@ a {
   border-radius: var(--rayon-moyen);
   background: var(--couleur-succes-fond);
   color: var(--couleur-succes);
+  font-weight: 500;
 }
 
 /* ---------- Icônes ---------- */
@@ -157,12 +193,14 @@ a {
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: var(--hauteur-cible);
+  min-height: var(--hauteur-bouton);
   padding: var(--espace-3) var(--espace-5);
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   border-radius: var(--rayon-rond);
   font: inherit;
+  font-size: var(--taille-bouton);
   font-weight: 700;
+  line-height: 1.25;
   text-decoration: none;
   cursor: pointer;
 }
@@ -177,6 +215,9 @@ a {
   background: var(--couleur-surface);
   color: var(--couleur-texte);
   border-color: var(--couleur-bordure);
+}
+.bouton--secondaire:hover {
+  border-color: var(--couleur-texte-tertiaire);
 }
 /* Bouton qui ressemble à un lien rouge (ex. « Se déconnecter ») */
 .bouton--lien {
@@ -204,13 +245,24 @@ a {
   border-radius: var(--rayon-rond);
   color: var(--texte-sur-sport);
   font-size: var(--taille-petite);
-  font-weight: 700;
+  font-weight: 600;
 }
 .pastille--course { background: var(--sport-course); }
 .pastille--velo { background: var(--sport-velo); }
 .pastille--padel { background: var(--sport-padel); }
 .pastille--foot { background: var(--sport-foot); }
 .pastille--rando { background: var(--sport-rando); }
+
+/* ---------- Bloc blanc à lignes (rubriques du profil, FAQ, notifications) ---------- */
+/* Même style partout : fond blanc, bord fin, grands coins arrondis */
+.menu-profil,
+.faq,
+.cases {
+  overflow: hidden;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-grand);
+  background: var(--couleur-surface);
+}
 
 /* ---------- Barre du bas ---------- */
 /* Place en bas de la page, pour que la barre ne cache pas le contenu */
@@ -226,11 +278,13 @@ a {
   width: 100%;
   max-width: var(--largeur-app);
   height: var(--hauteur-barre);
+  padding: 0 6px;
   border-top: 1px solid var(--couleur-bordure);
   background: var(--couleur-surface);
 }
 .barre ul {
   display: flex;
+  align-items: center;
   height: 100%;
   margin: 0;
   padding: 0;
@@ -240,23 +294,52 @@ a {
   flex: 1;
 }
 
-/* Un onglet : l'icône au-dessus du texte */
+/* Un onglet : l'icône (dans sa pastille) au-dessus du texte */
 .barre a {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   gap: var(--espace-1);
-  height: 100%;
+  min-height: var(--hauteur-cible);
   color: var(--couleur-texte-secondaire);
-  font-size: var(--taille-mini);
-  line-height: 1.1;
+  font-size: var(--taille-onglet);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.1px;
   text-align: center;
   text-decoration: none;
 }
+.barre__indicateur {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 1.875rem;
+  border-radius: var(--rayon-rond);
+}
+.barre__indicateur .icone {
+  width: 1.375rem;
+  height: 1.375rem;
+}
 
-/* L'onglet de la page affichée : en bleu */
+/* L'onglet de la page affichée : texte foncé, icône sur pastille orange clair */
 .barre a[aria-current='page'] {
-  color: var(--couleur-primaire);
-  font-weight: 700;
+  color: var(--couleur-texte);
+}
+.barre a[aria-current='page'] .barre__indicateur {
+  background: var(--couleur-primaire-doux);
+  color: var(--couleur-primaire-texte);
+}
+
+/* Onglet « Proposer » : gros rond orange */
+.barre a.barre__onglet--accent .barre__indicateur {
+  width: 3rem;
+  height: 3rem;
+  background: var(--couleur-primaire);
+  color: var(--couleur-sur-primaire);
+}
+.barre a.barre__onglet--accent .barre__indicateur .icone {
+  width: 1.5rem;
+  height: 1.5rem;
 }

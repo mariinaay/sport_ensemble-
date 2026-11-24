@@ -1,20 +1,26 @@
-/* Toutes les valeurs de design sont déclarées ici.
+/* Toutes les valeurs de design sont déclarées ici (maquettes Figma V2).
    Aucune couleur, espacement ou rayon en dur dans les composants. */
 :root {
   /* Couleurs */
-  --couleur-primaire: #2a2ad4;
-  --couleur-primaire-fonce: #1f1fa8;
-  --couleur-fond: #f1efe9;
+  --couleur-primaire: #ff5a1f; /* orange « accent » : boutons, bouton Proposer */
+  --couleur-primaire-fonce: #e84a12;
+  --couleur-primaire-doux: #ffe7dc; /* fond orange clair (onglet actif, pastille d'icône) */
+  --couleur-primaire-texte: #b53a0c; /* orange foncé lisible pour les liens et petits textes */
+  --couleur-encre: #15171c; /* fond des cartes sombres */
+  --couleur-fond: #f5f3ee;
   --couleur-surface: #ffffff;
-  --couleur-texte: #1b1b2f;
-  --couleur-texte-secondaire: #4a4a5e; /* contraste >= 4,5:1 sur le fond */
-  --couleur-bordure: #cfcbc0;
-  --couleur-erreur: #b3261e;
-  --couleur-erreur-fond: #fbe9e7;
+  --couleur-surface-attenuee: #ece8df;
+  --couleur-texte: #15171c;
+  --couleur-texte-secondaire: #5b5f68; /* contraste >= 4,5:1 sur le fond */
+  --couleur-texte-tertiaire: #8e929a; /* uniquement pour les éléments décoratifs */
+  --couleur-bordure: #e2ddd2;
+  --couleur-erreur: #cf3b2f;
+  --couleur-erreur-fond: #fbe4e1;
   --couleur-succes: #1b6e3a;
   --couleur-succes-fond: #e3f3e8;
-  --couleur-focus: #ff9f1c;
+  --couleur-focus: #15171c;
   --couleur-sur-primaire: #ffffff;
+  --couleur-sur-sombre-voile: rgba(255, 255, 255, 0.08);
 
   /* Sports (texte foncé sur ces fonds pour garder le contraste) */
   --sport-course: #ff8a5c;
@@ -25,10 +31,10 @@
   --texte-sur-sport: #111111;
 
   /* Accueil (photo de fond + voile sombre pour garder le texte blanc lisible) */
-  --splash-fond-secours: #1a1030;
-  --splash-voile-haut: rgba(10, 8, 25, 0.05);
-  --splash-voile-milieu: rgba(10, 8, 25, 0.55);
-  --splash-voile-bas: rgba(10, 8, 25, 0.92);
+  --splash-fond-secours: #15171c;
+  --splash-voile-haut: rgba(21, 23, 28, 0.05);
+  --splash-voile-milieu: rgba(21, 23, 28, 0.55);
+  --splash-voile-bas: rgba(21, 23, 28, 0.94);
 
   /* Espacements */
   --espace-1: 0.25rem;
@@ -39,20 +45,27 @@
   --espace-6: 2rem;
 
   /* Rayons */
-  --rayon-petit: 0.5rem;
-  --rayon-moyen: 0.75rem;
+  --rayon-petit: 0.625rem; /* 10px */
+  --rayon-moyen: 1rem; /* 16px */
+  --rayon-grand: 1.375rem; /* 22px : cartes et blocs */
   --rayon-rond: 999px;
 
   /* Typographie */
-  --police: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --taille-mini: 0.75rem; /* textes de la barre du bas */
-  --taille-petite: 0.875rem;
-  --taille-base: 1rem;
-  --taille-titre-2: 1.5rem;
-  --taille-titre-1: 2rem;
+  --police: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --police-titre: 'Bricolage Grotesque', 'DM Sans', system-ui, sans-serif;
+  --taille-onglet: 0.625rem; /* 10px : textes de la barre du bas */
+  --taille-mini: 0.6875rem; /* 11px : surtitres en majuscules */
+  --taille-petite: 0.8125rem; /* 13px */
+  --taille-base: 0.9375rem; /* 15px */
+  --taille-bouton: 1rem; /* 16px */
+  --taille-titre-3: 1.0625rem; /* 17px */
+  --taille-titre-2: 1.25rem; /* 20px */
+  --taille-titre-profil: 1.5rem; /* 24px */
+  --taille-titre-1: 2rem; /* 32px */
 
   /* Divers */
   --largeur-app: 430px;
   --hauteur-cible: 2.75rem; /* zone tactile minimale */
-  --hauteur-barre: 4rem; /* barre du bas */
+  --hauteur-bouton: 3.25rem; /* 52px */
+  --hauteur-barre: 4.5rem; /* barre du bas */
 }
