@@ -20,7 +20,6 @@
 }
 
 .profil__avatar-cadre {
-  position: relative;
   grid-row: 1 / span 2;
   width: 4rem;
   height: 4rem;
@@ -105,7 +104,8 @@
   text-decoration: none;
   cursor: pointer;
 }
-.ligne-menu:hover {
+.ligne-menu:hover,
+.case:hover {
   background: var(--couleur-fond);
 }
 .ligne-menu:focus-visible {
@@ -128,16 +128,20 @@
   height: 1rem;
 }
 
-.ligne-menu__textes {
+/* Titre en gras et petit texte gris en dessous (aussi pour les lignes de Notifications) */
+.ligne-menu__textes,
+.case__textes {
   display: flex;
   flex: 1;
   flex-direction: column;
   gap: 2px;
 }
-.ligne-menu__titre {
+.ligne-menu__titre,
+.case__titre {
   font-weight: 600;
 }
-.ligne-menu__sous-titre {
+.ligne-menu__sous-titre,
+.case__aide {
   color: var(--couleur-texte-secondaire);
   font-size: var(--taille-petite);
   font-weight: 500;
@@ -153,7 +157,7 @@
   transform: rotate(90deg);
 }
 
-/* Le formulaire qui s'ouvre sous « Mes informations » */
+/* Les formulaires qui s'ouvrent sous une rubrique */
 .ligne-menu__panneau {
   padding: var(--espace-2) var(--espace-4) var(--espace-4);
 }
@@ -200,23 +204,6 @@
 }
 .case + .case {
   border-top: 1px solid var(--couleur-bordure);
-}
-.case:hover {
-  background: var(--couleur-fond);
-}
-.case__textes {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 2px;
-}
-.case__titre {
-  font-weight: 600;
-}
-.case__aide {
-  color: var(--couleur-texte-secondaire);
-  font-size: var(--taille-petite);
-  font-weight: 500;
 }
 
 /* La case à cocher dessinée comme un interrupteur (orange = activé) */

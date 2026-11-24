@@ -1,7 +1,6 @@
-// Les filtres de la page Séances : leurs choix, et le test d'une séance
-import { dateSeance } from '../../utils/constants'
+// Recherche et filtres de la page Séances : les choix, le test d'une séance, la phrase « Rien de… »
+import { dateSeance, libelleSport, NOMS_COURTS } from '../../utils/constants'
 
-// Rien de coché
 export const FILTRES_VIDES = { sports: [], jours: [], creneaux: [], niveaux: [], distances: [] }
 
 // Les groupes de la feuille « Filtres » (dans un groupe, on peut cocher plusieurs choix)
@@ -43,9 +42,24 @@ export const GROUPES = [
   },
 ]
 
-// Libellé d'un choix : ('creneaux', 'matin') → 'Matin'
+// ('creneaux', 'matin') → 'Matin'
 export const libelleChoix = (cle, valeur) =>
   GROUPES.find((g) => g.cle === cle).choix.find((c) => c.value === valeur).label
+
+// 'Vélo' → 'velo' (pour chercher sans se soucier des accents ni des majuscules)
+const simplifier = (texte) =>
+  texte
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // retire les accents (é → e)
+    .toLowerCase()
+
+// Le texte tapé est-il dans un de ces textes ? (rien de tapé : tout passe)
+const contient = (textes, cherche) =>
+  !cherche || textes.some((texte) => texte && simplifier(texte).includes(simplifier(cherche)))
+
+// « Quel sport ? » cherche seulement dans le nom du sport, « Où ? » seulement dans le lieu
+export const bonSport = (seance, cherche) => contient([libelleSport(seance.sport), NOMS_COURTS[seance.sport]], cherche)
+export const bonEndroit = (seance, cherche) => contient([seance.title, seance.place, seance.city], cherche)
 
 // '6:30' → 390 (secondes par km)
 function secondes(allure) {
@@ -53,22 +67,28 @@ function secondes(allure) {
   return min * 60 + sec
 }
 
-// Une séance passe-t-elle les filtres ? (pour chaque groupe : un des choix cochés)
+// Dans un groupe sans rien de coché, tout passe ; sinon il faut un des choix cochés
+const passe = (coches, valeur) => coches.length === 0 || coches.includes(valeur)
+
+const JOURS = { 0: 'dimanche', 6: 'samedi' } // getDay() : 0 = dimanche, 6 = samedi
+
+// 9 → 'matin', 13 → 'midi', 18 → 'soir' (entre 15 h et 17 h : aucun créneau)
+function creneau(heure) {
+  if (heure < 12) return 'matin'
+  if (heure < 15) return 'midi'
+  if (heure >= 17) return 'soir'
+  return ''
+}
+
+// Une séance passe-t-elle les filtres ?
 export function passeLesFiltres(seance, filtres) {
   const date = dateSeance(seance)
-  const jour = date.getDay() === 0 ? 'dimanche' : date.getDay() === 6 ? 'samedi' : ''
-  const heure = date.getHours()
-  let creneau = ''
-  if (heure < 12) creneau = 'matin'
-  else if (heure < 15) creneau = 'midi'
-  else if (heure >= 17) creneau = 'soir'
+  if (!passe(filtres.sports, seance.sport)) return false
+  if (!passe(filtres.jours, JOURS[date.getDay()])) return false
+  if (!passe(filtres.creneaux, creneau(date.getHours()))) return false
+  if (!passe(filtres.niveaux, seance.level)) return false
 
-  if (filtres.sports.length > 0 && !filtres.sports.includes(seance.sport)) return false
-  if (filtres.jours.length > 0 && !filtres.jours.includes(jour)) return false
-  if (filtres.creneaux.length > 0 && !filtres.creneaux.includes(creneau)) return false
-  if (filtres.niveaux.length > 0 && !filtres.niveaux.includes(seance.level)) return false
-
-  // Distance du parcours : ≤ 5 km ou 5–10 km
+  // Distance du parcours : ≤ 5 km ou 5–10 km (une séance sans distance ne passe pas)
   const km = seance.distanceKm
   const moins5 = filtres.distances.includes('moins5')
   const de5a10 = filtres.distances.includes('5a10')
@@ -77,9 +97,26 @@ export function passeLesFiltres(seance, filtres) {
     if (!km || !bonne) return false
   }
 
-  // Allure entre 6:00 et 7:00 /km
+  // Allure entre 6:00 et 7:00 /km (une séance sans allure ne passe pas)
   if (filtres.distances.includes('allure6a7')) {
-    if (!seance.pace || secondes(seance.pace) < 360 || secondes(seance.pace) > 420) return false
+    const allure = seance.pace ? secondes(seance.pace) : 0
+    if (allure < 360 || allure > 420) return false
   }
   return true
+}
+
+// « de padel », mais « d'escalade »
+const de = (mot) => (/^[aeiouyéèêh]/i.test(mot) ? `d'${mot}` : `de ${mot}`)
+
+// Phrase de l'état vide : « Rien de padel dimanche matin à Belleville avec ces critères. Élargis… »
+// (recherche et endroit déjà sans espaces autour)
+export function phraseRien(filtres, recherche, endroit) {
+  let phrase = 'Rien'
+  if (filtres.sports.length > 0) phrase += ` ${de(filtres.sports.map((s) => libelleSport(s).toLowerCase()).join(' ou '))}`
+  if (recherche) phrase += ` ${de(recherche)}`
+  if (filtres.jours.length === 1) phrase += ` ${filtres.jours[0]}`
+  if (filtres.jours.length === 2) phrase += ' ce week-end'
+  if (filtres.creneaux.length > 0) phrase += ` ${filtres.creneaux.join(' ou ')}`
+  if (endroit) phrase += ` à ${endroit}`
+  return `${phrase} avec ces critères. Élargis ta recherche ou lance ta propre sortie`
 }

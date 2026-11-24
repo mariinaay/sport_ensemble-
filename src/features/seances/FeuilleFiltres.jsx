@@ -1,11 +1,8 @@
 import { useEffect, useRef } from 'react'
 import Bouton from '../../components/Bouton'
 import Icone from '../../components/Icone'
-import { AUTRES_SPORTS, NOMS_COURTS, SPORTS } from '../../utils/constants'
+import { nomCourt, TOUS_LES_SPORTS } from '../../utils/constants'
 import { FILTRES_VIDES, GROUPES } from './filtres'
-
-// Tous les sports de la rangée du haut (les 5 de l'appli, puis les autres)
-const TOUS_LES_SPORTS = [...SPORTS, ...AUTRES_SPORTS]
 
 // Feuille « Filtres » qui monte du bas de l'écran (bouton réglages de la page Séances)
 export default function FeuilleFiltres({ filtres, setFiltres, nombre, onFermer }) {
@@ -28,13 +25,12 @@ export default function FeuilleFiltres({ filtres, setFiltres, nombre, onFermer }
   // Coche ou décoche un choix dans un groupe (ex. 'jours', 'dimanche')
   function basculer(cle, valeur) {
     const liste = filtres[cle]
-    const nouvelle = liste.includes(valeur) ? liste.filter((v) => v !== valeur) : [...liste, valeur]
-    setFiltres({ ...filtres, [cle]: nouvelle })
+    setFiltres({ ...filtres, [cle]: liste.includes(valeur) ? liste.filter((v) => v !== valeur) : [...liste, valeur] })
   }
 
   let texteBouton = `Voir ${nombre} séances`
-  if (nombre === 1) texteBouton = 'Voir 1 séance'
   if (nombre === 0) texteBouton = 'Aucune séance'
+  else if (nombre === 1) texteBouton = 'Voir 1 séance'
 
   return (
     <>
@@ -51,7 +47,6 @@ export default function FeuilleFiltres({ filtres, setFiltres, nombre, onFermer }
           </button>
         </div>
 
-        {/* Les sports en tuiles (la rangée défile sur le côté) */}
         <div className="feuille__sports" role="group" aria-label="Sports">
           {TOUS_LES_SPORTS.map((sport) => (
             <button
@@ -63,12 +58,11 @@ export default function FeuilleFiltres({ filtres, setFiltres, nombre, onFermer }
               onClick={() => basculer('sports', sport.value)}
             >
               <Icone nom={sport.value} />
-              <span aria-hidden="true">{NOMS_COURTS[sport.value] ?? sport.label}</span>
+              <span aria-hidden="true">{nomCourt(sport.value)}</span>
             </button>
           ))}
         </div>
 
-        {/* Jour, Créneau, Niveau, Distance & allure */}
         {GROUPES.map((groupe) => (
           <fieldset key={groupe.cle} className="feuille__groupe">
             <legend>{groupe.titre}</legend>
@@ -90,7 +84,6 @@ export default function FeuilleFiltres({ filtres, setFiltres, nombre, onFermer }
           </fieldset>
         ))}
 
-        {/* Bouton orange toujours visible en bas de la feuille */}
         <div className="feuille__pied">
           <Bouton onClick={onFermer}>{texteBouton}</Bouton>
         </div>

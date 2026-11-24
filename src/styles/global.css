@@ -159,21 +159,21 @@ a {
   font-weight: 600;
 }
 
-/* Erreur en haut d'un formulaire (ex. « Email ou mot de passe incorrect ») */
-.message-erreur {
-  padding: var(--espace-3) var(--espace-4);
-  border-radius: var(--rayon-moyen);
-  background: var(--couleur-erreur-fond);
-  color: var(--couleur-erreur);
-  font-weight: 500;
-}
-/* Message vert (ex. « Modifications enregistrées ») */
+/* Message en haut d'un formulaire : rouge (ex. « Email ou mot de passe incorrect »)
+   ou vert (ex. « Modifications enregistrées ») */
+.message-erreur,
 .message-succes {
   padding: var(--espace-3) var(--espace-4);
   border-radius: var(--rayon-moyen);
+  font-weight: 500;
+}
+.message-erreur {
+  background: var(--couleur-erreur-fond);
+  color: var(--couleur-erreur);
+}
+.message-succes {
   background: var(--couleur-succes-fond);
   color: var(--couleur-succes);
-  font-weight: 500;
 }
 
 /* ---------- Icônes ---------- */
@@ -181,10 +181,6 @@ a {
   flex-shrink: 0;
   width: 1.25rem;
   height: 1.25rem;
-}
-.icone--mini {
-  width: 0.75rem;
-  height: 0.75rem;
 }
 
 /* ---------- Bouton ---------- */
@@ -219,14 +215,15 @@ a {
 .bouton--secondaire:hover {
   border-color: var(--couleur-texte-tertiaire);
 }
-/* Bouton qui ressemble à un lien rouge (ex. « Se déconnecter ») */
-.bouton--lien {
-  background: transparent;
-  color: var(--couleur-erreur);
-}
-/* Pareil en gris (ex. « Annuler ») */
+/* Boutons qui ressemblent à un lien : rouge (ex. « Se déconnecter ») ou gris (ex. « Annuler ») */
+.bouton--lien,
 .bouton--lien-gris {
   background: transparent;
+}
+.bouton--lien {
+  color: var(--couleur-erreur);
+}
+.bouton--lien-gris {
   color: var(--couleur-texte-secondaire);
 }
 .bouton--lien:hover,

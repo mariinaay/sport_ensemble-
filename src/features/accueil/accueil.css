@@ -1,6 +1,5 @@
-/* Styles de la page d'accueil. */
+/* Styles de la page d'accueil (splash), avant la connexion. */
 
-/* ---------- Page d'accueil (splash) ---------- */
 .splash {
   min-height: 100vh;
   display: flex;

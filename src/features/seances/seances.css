@@ -1,5 +1,5 @@
-/* Page Séances, design V2 (orange + noir sur beige) : liste, erreur, aucune séance, feuille Filtres.
-   Couleurs : seulement les variables --v2-* de styles/theme-v2.css. */
+/* Page Séances (orange + noir sur beige) : liste, erreur, aucune séance, feuille Filtres.
+   Couleurs : seulement les variables --theme-* de styles/theme.css. */
 
 /* ---------- Titre + bouton des filtres ---------- */
 .seances__entete {
@@ -16,7 +16,7 @@
 }
 .seances__sous-titre {
   margin: var(--espace-1) 0 0;
-  color: var(--v2-texte-2);
+  color: var(--theme-texte-2);
   font-size: var(--taille-petite);
 }
 
@@ -32,8 +32,8 @@
   padding: 0;
   border: none;
   border-radius: var(--rayon-rond);
-  background: var(--v2-encre);
-  color: var(--v2-surface);
+  background: var(--theme-encre);
+  color: var(--theme-surface);
   cursor: pointer;
 }
 
@@ -45,10 +45,10 @@
   min-width: 1.25rem;
   height: 1.25rem;
   padding: 0 var(--espace-1);
-  border: 2px solid var(--v2-fond);
+  border: 2px solid var(--theme-fond);
   border-radius: var(--rayon-rond);
-  background: var(--v2-orange-texte);
-  color: var(--v2-surface);
+  background: var(--theme-orange-texte);
+  color: var(--theme-surface);
   font-size: var(--taille-mini);
   font-weight: 700;
   line-height: 1.25rem;
@@ -70,11 +70,10 @@
   left: var(--espace-4);
   top: 50%;
   transform: translateY(-50%);
-  color: var(--v2-texte-2);
+  color: var(--theme-texte-2);
   pointer-events: none;
 }
 .seances__lieu .seances__lieu-champ {
-  width: 100%;
   padding-left: calc(var(--espace-4) + var(--espace-6));
   padding-right: var(--espace-3);
   text-overflow: ellipsis;
@@ -99,18 +98,18 @@
   gap: var(--espace-1);
   min-height: 3rem;
   padding: 0 var(--espace-3);
-  border: 1px solid var(--v2-encre);
+  border: 1px solid var(--theme-encre);
   border-radius: var(--rayon-rond);
-  background: var(--v2-surface);
-  color: var(--v2-encre);
+  background: var(--theme-surface);
+  color: var(--theme-encre);
   font: inherit;
   font-size: var(--taille-petite);
   font-weight: 700;
   cursor: pointer;
 }
 .seances__bouton-carte--actif {
-  background: var(--v2-encre);
-  color: var(--v2-surface);
+  background: var(--theme-encre);
+  color: var(--theme-surface);
 }
 
 /* ---------- Pastilles de filtres (passent à la ligne) ---------- */
@@ -127,7 +126,7 @@
   padding: 0;
   border: 0;
   background: none;
-  color: var(--v2-encre);
+  color: var(--theme-encre);
   font: inherit;
   font-size: var(--taille-petite);
   font-weight: 600;
@@ -139,20 +138,20 @@
   gap: var(--espace-1);
   min-height: 2.25rem;
   padding: 0 var(--espace-3);
-  border: 1px solid var(--v2-bordure);
+  border: 1px solid var(--theme-bordure);
   border-radius: var(--rayon-rond);
-  background: var(--v2-surface);
+  background: var(--theme-surface);
 }
 /* Filtre coché : fond noir, texte blanc */
 .filtre--coche .filtre__forme {
-  border-color: var(--v2-encre);
-  background: var(--v2-encre);
-  color: var(--v2-surface);
+  border-color: var(--theme-encre);
+  background: var(--theme-encre);
+  color: var(--theme-surface);
 }
 
 /* ---------- Compteur + liste ---------- */
 .seances__chargement {
-  color: var(--v2-texte-2);
+  color: var(--theme-texte-2);
 }
 .seances__compteur {
   display: flex;
@@ -160,12 +159,12 @@
   justify-content: space-between;
   gap: var(--espace-3);
   margin: 0 0 var(--espace-3);
-  color: var(--v2-texte-2);
+  color: var(--theme-texte-2);
   font-size: var(--taille-petite);
 }
 .seances__compteur-nombre {
-  color: var(--v2-encre);
-  font-family: var(--v2-police-titre);
+  color: var(--theme-encre);
+  font-family: var(--theme-police-titre);
   font-size: var(--taille-base);
   font-weight: 800;
 }
@@ -192,9 +191,9 @@
   align-items: center;
   margin-top: var(--espace-2);
   padding: var(--espace-6) var(--espace-5) var(--espace-5);
-  border-radius: var(--v2-rayon-grand);
-  background: var(--v2-surface);
-  box-shadow: var(--v2-ombre);
+  border-radius: var(--theme-rayon-grand);
+  background: var(--theme-surface);
+  box-shadow: var(--theme-ombre);
   text-align: center;
 }
 .seances__etat-rond {
@@ -205,12 +204,12 @@
   height: 4.5rem;
   margin-bottom: var(--espace-4);
   border-radius: var(--rayon-rond);
-  background: var(--v2-orange-pale);
-  color: var(--v2-orange-texte);
+  background: var(--theme-orange-pale);
+  color: var(--theme-orange-texte);
 }
 .seances__etat-rond--erreur {
-  background: var(--v2-rouge-pale);
-  color: var(--v2-rouge);
+  background: var(--theme-rouge-pale);
+  color: var(--theme-rouge);
 }
 .seances__etat-dessin {
   width: 2rem;
@@ -222,7 +221,7 @@
 }
 .seances__etat-texte {
   margin: 0 0 var(--espace-5);
-  color: var(--v2-texte-2);
+  color: var(--theme-texte-2);
   font-size: var(--taille-petite);
   line-height: 1.5;
 }
@@ -243,24 +242,22 @@
   margin-top: var(--espace-4);
   padding: var(--espace-3) var(--espace-4);
   border: 1px solid transparent;
-  border-radius: var(--v2-rayon);
-  background: var(--v2-orange-pale);
-  color: var(--v2-encre);
+  border-radius: var(--theme-rayon);
+  background: var(--theme-orange-pale);
+  color: var(--theme-encre);
   font: inherit;
   font-size: var(--taille-petite);
   line-height: 1.4;
   text-align: left;
   cursor: pointer;
 }
-.seances__alerte strong {
-  color: var(--v2-orange-texte);
-}
+.seances__alerte strong,
 .seances__alerte-icone {
-  color: var(--v2-orange-texte);
+  color: var(--theme-orange-texte);
 }
 /* Alerte activée : contour orange */
 .seances__alerte[aria-pressed='true'] {
-  border-color: var(--v2-orange);
+  border-color: var(--theme-orange);
 }
 
 /* ---------- Feuille « Filtres » (monte du bas de l'écran) ---------- */
@@ -268,7 +265,7 @@
   position: fixed;
   inset: 0;
   z-index: 20;
-  background: var(--v2-voile);
+  background: var(--theme-voile);
 }
 .feuille {
   position: fixed;
@@ -281,9 +278,8 @@
   overflow-y: auto;
   transform: translateX(-50%);
   padding: var(--espace-2) var(--espace-4) 0;
-  border-radius: var(--v2-rayon-grand) var(--v2-rayon-grand) 0 0;
-  background: var(--v2-surface);
-  color: var(--v2-encre);
+  border-radius: var(--theme-rayon-grand) var(--theme-rayon-grand) 0 0;
+  background: var(--theme-surface);
   animation: feuille-monte 0.25s ease-out;
 }
 .feuille:focus {
@@ -307,7 +303,7 @@
   height: 0.25rem;
   margin: 0 auto var(--espace-3);
   border-radius: var(--rayon-rond);
-  background: var(--v2-bordure);
+  background: var(--theme-bordure);
 }
 
 .feuille__entete {
@@ -325,7 +321,7 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--v2-orange-texte);
+  color: var(--theme-orange-texte);
   font: inherit;
   font-weight: 700;
   text-decoration: underline;
@@ -352,13 +348,16 @@
   height: 4.75rem;
   padding: 0 var(--espace-2);
   border: 2px solid transparent;
-  border-radius: var(--v2-rayon);
-  background: var(--v2-fond);
-  color: var(--v2-encre);
+  border-radius: var(--theme-rayon);
+  background: var(--theme-fond);
+  color: var(--theme-encre);
   font: inherit;
   font-size: var(--taille-petite);
   font-weight: 600;
   cursor: pointer;
+}
+.tuile-filtre .icone {
+  color: var(--sport);
 }
 
 /* Un groupe : son titre, puis ses choix qui passent à la ligne */
@@ -374,7 +373,7 @@
 .feuille__groupe legend {
   margin-bottom: var(--espace-2);
   padding: 0;
-  color: var(--v2-texte-2);
+  color: var(--theme-texte-2);
   font-size: var(--taille-petite);
   font-weight: 600;
 }
@@ -386,23 +385,22 @@
   padding: var(--espace-2) var(--espace-4);
   border: 2px solid transparent;
   border-radius: var(--rayon-rond);
-  background: var(--v2-fond);
-  color: var(--v2-encre);
+  background: var(--theme-fond);
+  color: var(--theme-encre);
   font: inherit;
   font-size: var(--taille-petite);
   font-weight: 600;
   cursor: pointer;
 }
 .choix .icone {
-  color: var(--v2-orange-texte);
+  color: var(--theme-orange-texte);
 }
 
 /* Tuile ou choix coché : fond orange pâle + contour orange */
 .tuile-filtre[aria-pressed='true'],
 .choix[aria-pressed='true'] {
-  border-color: var(--v2-orange);
-  background: var(--v2-orange-pale);
-  color: var(--v2-encre);
+  border-color: var(--theme-orange);
+  background: var(--theme-orange-pale);
 }
 
 /* Bouton « Voir N séances » collé en bas de la feuille */
@@ -411,10 +409,5 @@
   bottom: 0;
   margin: 0 calc(-1 * var(--espace-4));
   padding: var(--espace-3) var(--espace-4) calc(var(--espace-5) + env(safe-area-inset-bottom));
-  background: var(--v2-surface);
-}
-
-/* Tuile de sport de la feuille Filtres : icône dans la couleur du sport */
-.tuile-filtre .icone {
-  color: var(--sport);
+  background: var(--theme-surface);
 }

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import Bouton from '../../components/Bouton'
 import EtatChargement from '../../components/EtatChargement'
-import Icone from '../../components/Icone'
 import { lireProfil } from '../../services/profil'
 import { lireUtilisateur, oublierUtilisateur } from '../../services/session'
 import FormulaireEmail from './FormulaireEmail'
@@ -16,21 +15,20 @@ export default function Profil() {
   const id = lireUtilisateur()?.id
 
   const [profil, setProfil] = useState(null)
-  const [chargement, setChargement] = useState(true)
   const [erreur, setErreur] = useState('')
   const [essai, setEssai] = useState(0) // +1 à chaque « Réessayer »
   const [ouverte, setOuverte] = useState(null) // rubrique dépliée : 'infos', 'securite' ou null
   const [confirmer, setConfirmer] = useState(false)
 
-  // Charger le profil
+  // Ni profil ni erreur : la réponse du back n'est pas encore arrivée
+  const chargement = !profil && !erreur
+
   useEffect(() => {
     if (!id) return
-    setChargement(true)
     setErreur('')
     lireProfil(id)
       .then(setProfil)
       .catch((e) => setErreur(e.message))
-      .finally(() => setChargement(false))
   }, [id, essai])
 
   // Ouvre ou ferme une rubrique (une seule ouverte à la fois)
@@ -52,7 +50,7 @@ export default function Profil() {
 
       <EtatChargement chargement={chargement} erreur={erreur} onReessayer={() => setEssai(essai + 1)} />
 
-      {!chargement && profil && (
+      {profil && (
         <>
           {/* En-tête : avatar, nom, email, ville, fiabilité */}
           <section className="profil">
@@ -74,7 +72,6 @@ export default function Profil() {
             )}
           </section>
 
-          {/* Les rubriques */}
           <ul className="menu-profil">
             <li>
               <LigneMenu icone="calendrier" titre="Mes séances" sousTitre="À venir · Passées" to="/mes-seances" />
@@ -118,12 +115,7 @@ export default function Profil() {
 
           {/* Déconnexion, avec confirmation */}
           <div className="profil__deconnexion">
-            {!confirmer && (
-              <Bouton variante="lien" onClick={() => setConfirmer(true)}>
-                Se déconnecter
-              </Bouton>
-            )}
-            {confirmer && (
+            {confirmer ? (
               <>
                 <Bouton variante="lien" onClick={deconnecter}>
                   Me déconnecter
@@ -132,6 +124,10 @@ export default function Profil() {
                   Annuler
                 </Bouton>
               </>
+            ) : (
+              <Bouton variante="lien" onClick={() => setConfirmer(true)}>
+                Se déconnecter
+              </Bouton>
             )}
           </div>
         </>

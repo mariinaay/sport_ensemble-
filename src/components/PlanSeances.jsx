@@ -12,26 +12,14 @@ const repereSeance = (seance, choisie) =>
     iconSize: null,
   })
 
-// Repère « Toi » (point bleu)
 const repereMoi = divIcon({ className: '', html: '<span class="repere-moi"></span>', iconSize: null })
 
-// Carte (plan OpenStreetMap) avec les séances.
-// `petit` : petite carte fixe (accueil) ; sinon on peut bouger, zoomer et toucher un repère (`onChoisir`).
-export default function PlanSeances({ seances, centre = MA_POSITION, zoom = 13, petit, choisie, onChoisir }) {
+// Plan OpenStreetMap des séances (page Séances) : toucher un repère choisit la séance
+export default function PlanSeances({ seances, centre, zoom, choisie, onChoisir }) {
   return (
-    <div className={petit ? 'plan plan--petit' : 'plan'}>
-      <MapContainer
-        center={centre}
-        zoom={zoom}
-        className="plan__carte"
-        zoomControl={!petit}
-        dragging={!petit}
-        touchZoom={!petit}
-        doubleClickZoom={!petit}
-        scrollWheelZoom={false}
-        keyboard={!petit}
-        attributionControl
-      >
+    <div className="plan">
+      {/* touchZoom écrit en dur : par défaut, Leaflet ne l'active que sur les écrans tactiles */}
+      <MapContainer center={centre} zoom={zoom} className="plan__carte" touchZoom scrollWheelZoom={false}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -45,8 +33,7 @@ export default function PlanSeances({ seances, centre = MA_POSITION, zoom = 13, 
               position={[s.lat, s.lng]}
               icon={repereSeance(s, choisie === s.id)}
               title={s.title}
-              interactive={!petit}
-              eventHandlers={{ click: () => onChoisir?.(s.id) }}
+              eventHandlers={{ click: () => onChoisir(s.id) }}
             />
           ))}
       </MapContainer>

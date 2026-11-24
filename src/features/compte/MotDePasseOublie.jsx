@@ -1,41 +1,24 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Bouton from '../../components/Bouton'
 import Champ from '../../components/Champ'
 import Message from '../../components/Message'
 import { motDePasseOublie } from '../../services/compte'
 import { estEmailValide, MESSAGES } from '../../utils/validation'
+import useFormulaire from './useFormulaire'
 import './compte.css'
 
 export default function MotDePasseOublie() {
-  const [email, setEmail] = useState('')
-  const [erreurs, setErreurs] = useState({})
-  const [envoi, setEnvoi] = useState(false)
-  const [envoye, setEnvoye] = useState(false)
+  const { valeurs, erreurs, envoi, succes, changer, soumettre } = useFormulaire({ email: '' })
+  const { email } = valeurs
 
-  async function envoyer(e) {
+  function envoyer(e) {
     e.preventDefault()
-
-    // 1. Vérifier le champ
-    if (!estEmailValide(email)) {
-      setErreurs({ email: MESSAGES.email })
-      return
-    }
-    setErreurs({})
-
-    // 2. Demander au back
-    setEnvoi(true)
-    try {
-      await motDePasseOublie(email)
-      setEnvoye(true)
-    } catch (erreur) {
-      setErreurs({ serveur: erreur.message })
-    }
-    setEnvoi(false)
+    const nouvellesErreurs = estEmailValide(email) ? {} : { email: MESSAGES.email }
+    soumettre(nouvellesErreurs, () => motDePasseOublie(email))
   }
 
-  // Demande envoyée
-  if (envoye) {
+  // Email envoyé : la page de confirmation remplace le formulaire
+  if (succes) {
     return (
       <main id="contenu" className="page">
         <h1>Vérifie ta boîte mail</h1>
@@ -56,14 +39,7 @@ export default function MotDePasseOublie() {
       <form onSubmit={envoyer} noValidate>
         <Message type="erreur">{erreurs.serveur}</Message>
 
-        <Champ
-          id="email"
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          erreur={erreurs.email}
-        />
+        <Champ id="email" label="Email" type="email" value={email} onChange={changer} erreur={erreurs.email} />
 
         <Bouton type="submit" chargement={envoi}>
           Recevoir le lien
