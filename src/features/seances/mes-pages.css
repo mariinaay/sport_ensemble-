@@ -47,13 +47,13 @@
 .recapitulatif p:last-child { margin-bottom: 0; }
 .recapitulatif .icone, .recapitulatif p > span { width: 20px; flex-shrink: 0; color: var(--couleur-primaire); }
 .confirmation__info { margin-top: var(--espace-5); padding: var(--espace-4); border-radius: var(--rayon-moyen); background: var(--couleur-primaire-doux); color: var(--couleur-primaire-texte); font-size: var(--taille-petite); text-align: left; }
-.annuler-place { min-height: var(--hauteur-cible); border: 0; background: transparent; color: var(--couleur-primaire); font: inherit; font-weight: 700; cursor: pointer; }
+.annuler-place { min-height: var(--hauteur-cible); border: 0; background: transparent; color: var(--couleur-primaire-texte); font: inherit; font-weight: 700; cursor: pointer; }
 
 /* Mes séances */
 .mes-seances h1 { margin: var(--espace-4) 0 var(--espace-5); }
 .onglets { display: flex; margin-bottom: var(--espace-4); border-bottom: 1px solid var(--couleur-bordure); }
 .onglets button { flex: 1; min-height: var(--hauteur-cible); border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--couleur-texte-secondaire); font: inherit; cursor: pointer; }
-.onglets button.actif { border-color: var(--couleur-primaire); color: var(--couleur-primaire); font-weight: 700; }
+.onglets button.actif { border-color: var(--couleur-primaire); color: var(--couleur-primaire-texte); font-weight: 700; }
 .liste-seances { display: grid; gap: var(--espace-3); }
 .mes-carte { display: block; color: var(--couleur-texte); text-decoration: none; }
 .mes-carte__titre { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--espace-2); margin-bottom: var(--espace-2); }

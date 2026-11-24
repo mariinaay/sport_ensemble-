@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { requete, envoyer } from './api'
 import { dateSeance } from '../utils/constants'
 
-// Une séance avec ses inscriptions, ses participants et son organisateur
+// Charge une séance avec ses participants et son organisateur
 async function chargerSeance(id) {
   const [seance, inscriptions, utilisateurs] = await Promise.all([
     requete(`/sessions/${id}`), requete(`/registrations?sessionId=${id}`), requete('/users'),
@@ -13,11 +13,12 @@ async function chargerSeance(id) {
   return { seance, inscriptions, participants, organisateur: utilisateurs.find((u) => u.id === seance.organizerId) }
 }
 
-// Fiche et confirmation : charge la séance ; `charger` sert aussi au bouton « Réessayer »
+// Charge une séance pour les pages détail et confirmation
 export function useSeance(id) {
-  const [donnees, setDonnees] = useState(null)
-  const [erreur, setErreur] = useState('')
+  const [donnees, setDonnees] = useState(null) // la séance chargée
+  const [erreur, setErreur] = useState('') // le message d'erreur
 
+  // Lance le chargement (sert aussi pour le bouton « Réessayer »)
   const charger = useCallback(() => {
     setErreur('')
     chargerSeance(id).then(setDonnees).catch((e) => setErreur(e.message))
@@ -28,17 +29,18 @@ export function useSeance(id) {
   return { donnees, erreur, setErreur, charger }
 }
 
-// Déjà inscrit : on ne crée pas une deuxième inscription
+// Inscrit l'utilisateur à une séance (sauf s'il est déjà inscrit)
 export async function rejoindreSeance(id, utilisateur, inscriptions) {
   const existante = inscriptions.find((i) => i.userId === utilisateur.id)
   return existante || envoyer('POST', '/registrations', { sessionId: Number(id), userId: utilisateur.id })
 }
 
+// Annule l'inscription à une séance
 export function annulerInscription(id) {
   return requete(`/registrations/${id}`, { method: 'DELETE' })
 }
 
-// Les séances où l'utilisateur est inscrit (une inscription dont la séance n'existe plus est ignorée)
+// Charge les séances où l'utilisateur est inscrit
 export async function chargerMesSeances(id) {
   const [inscriptions, seances, utilisateurs] = await Promise.all([
     requete(`/registrations?userId=${id}`), requete('/sessions'), requete('/users'),
@@ -49,17 +51,19 @@ export async function chargerMesSeances(id) {
   }).filter(Boolean)
 }
 
-// En minuscule : il s'affiche au milieu d'une phrase (« niveau débutant »)
+// Donne le niveau en texte : 'débutant', 'intermédiaire' ou 'expert'
 export function niveauTexte(seance) {
-  return seance.level === 'intermediaire' ? 'intermédiaire' : 'débutant'
+  if (seance.level === 'intermediaire') return 'intermédiaire'
+  if (seance.level === 'expert') return 'expert'
+  return 'débutant'
 }
 
-// '2026-10-18' → 'dim. 18 oct.' (ou 'dimanche 18 octobre' avec les options longues)
+// Affiche la date en français, ex. 'dim. 18 oct.'
 export function dateTexte(seance, options = { weekday: 'short', day: 'numeric', month: 'short' }) {
   return new Intl.DateTimeFormat('fr-FR', options).format(dateSeance(seance))
 }
 
-// '09:00' → '09h00'
+// Affiche l'heure, ex. '09h00'
 export function heureSeance(seance) {
   return seance.time.replace(':', 'h')
 }

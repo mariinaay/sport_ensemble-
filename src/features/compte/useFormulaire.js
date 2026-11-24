@@ -1,19 +1,18 @@
 import { useState } from 'react'
 
-// Ce que tous les formulaires ont en commun : les valeurs des champs, les erreurs, l'envoi en cours, le succès.
-// Les clés de `valeurs` et de `erreurs` sont les id des champs.
+// Code commun à tous les formulaires
 export default function useFormulaire(valeursDeDepart) {
-  const [valeurs, setValeurs] = useState(valeursDeDepart)
-  const [erreurs, setErreurs] = useState({})
-  const [envoi, setEnvoi] = useState(false)
-  const [succes, setSucces] = useState(false)
+  const [valeurs, setValeurs] = useState(valeursDeDepart) // ce qui est écrit dans les champs
+  const [erreurs, setErreurs] = useState({}) // les messages d'erreur
+  const [envoi, setEnvoi] = useState(false) // true pendant l'envoi
+  const [succes, setSucces] = useState(false) // true si l'envoi a marché
 
-  // Un seul onChange pour tous les champs : l'id du champ dit quelle valeur changer
+  // Quand on écrit dans un champ, on met à jour sa valeur
   function changer(e) {
     setValeurs({ ...valeurs, [e.target.id]: e.target.value })
   }
 
-  // Affiche les erreurs trouvées ; s'il n'y en a aucune, lance `action` (l'appel au back)
+  // Quand on valide le formulaire : s'il y a des erreurs on les affiche, sinon on envoie
   async function soumettre(erreursTrouvees, action) {
     setSucces(false)
     setErreurs(erreursTrouvees)
@@ -24,7 +23,7 @@ export default function useFormulaire(valeursDeDepart) {
       await action()
       setSucces(true)
     } catch (erreur) {
-      // Erreur sous le champ concerné, sinon en haut
+      // Si l'envoi échoue, on affiche l'erreur
       setErreurs({ [erreur.champ ?? 'serveur']: erreur.message })
     }
     setEnvoi(false)

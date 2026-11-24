@@ -13,7 +13,7 @@ import { bonEndroit, bonSport, FILTRES_VIDES, GROUPES, libelleChoix, passeLesFil
 import '../../styles/theme.css'
 import './seances.css'
 
-// Petit dessin « parcours » (deux points reliés par un chemin) pour l'état vide
+// Petit dessin affiché quand il n'y a aucune séance
 function IconeParcours() {
   return (
     <svg
@@ -36,21 +36,22 @@ function IconeParcours() {
 export default function Seances() {
   const id = lireUtilisateur()?.id
   const [parametres] = useSearchParams()
-  const sportDeLAccueil = parametres.get('sport') // ex. /seances?sport=padel (tuile de l'accueil)
+  const sportDeLAccueil = parametres.get('sport') // le sport choisi sur la page d'accueil
 
-  const [seances, setSeances] = useState([])
-  const [ville, setVille] = useState('')
+  const [seances, setSeances] = useState([]) // toutes les séances
+  const [ville, setVille] = useState('') // la ville de l'utilisateur
   const [etat, setEtat] = useState('chargement') // 'chargement', 'erreur' ou 'pret'
-  const [essai, setEssai] = useState(0) // +1 à chaque « Réessayer »
+  const [essai, setEssai] = useState(0) // augmente quand on clique sur « Réessayer »
 
-  const [recherche, setRecherche] = useState('') // « Quel sport ? »
-  const [endroit, setEndroit] = useState('') // « Où ? » (vide = autour de moi)
-  const [filtres, setFiltres] = useState({ ...FILTRES_VIDES, sports: sportDeLAccueil ? [sportDeLAccueil] : [] })
-  const [feuilleOuverte, setFeuilleOuverte] = useState(false)
-  const [vueCarte, setVueCarte] = useState(false)
-  const [choisie, setChoisie] = useState(null) // id de la séance touchée sur la carte
-  const [alerte, setAlerte] = useState(false) // pas encore envoyée au serveur
+  const [recherche, setRecherche] = useState('') // le sport écrit dans la recherche
+  const [endroit, setEndroit] = useState('') // le lieu écrit dans la recherche
+  const [filtres, setFiltres] = useState({ ...FILTRES_VIDES, sports: sportDeLAccueil ? [sportDeLAccueil] : [] }) // les filtres cochés
+  const [feuilleOuverte, setFeuilleOuverte] = useState(false) // true si la fenêtre des filtres est ouverte
+  const [vueCarte, setVueCarte] = useState(false) // true pour voir la carte, false pour la liste
+  const [choisie, setChoisie] = useState(null) // la séance choisie sur la carte
+  const [alerte, setAlerte] = useState(false) // true si l'alerte est activée
 
+  // Charge le profil et les séances depuis l'API
   useEffect(() => {
     if (!id) return
     setEtat('chargement')
@@ -63,49 +64,52 @@ export default function Seances() {
       .catch(() => setEtat('erreur'))
   }, [id, essai])
 
-  // useCallback : la feuille relance son effet (focus, Échap) quand onFermer change ;
-  // sans lui, chaque choix coché redonnerait le focus à la feuille.
+  // Ferme la fenêtre des filtres
   const fermerFeuille = useCallback(() => setFeuilleOuverte(false), [])
 
+  // Si on n'est pas connecté, on va à la page de connexion
   if (!id) return <Navigate to="/connexion" replace />
 
   const cherche = recherche.trim()
   const lieu = endroit.trim()
 
-  // Les séances qui passent la recherche et les filtres, de la plus proche à la plus loin
+  // Les séances qui correspondent à la recherche et aux filtres, de la plus proche à la plus loin
   const resultats = seances
     .filter((s) => bonSport(s, cherche) && bonEndroit(s, lieu) && passeLesFiltres(s, filtres))
     .sort((a, b) => a.distanceFromUserKm - b.distanceFromUserKm)
   const aucune = resultats.length === 0
   const une = resultats.length === 1
-  // Sur la carte : la séance touchée, sinon la plus proche
+  // La séance affichée sous la carte : celle choisie, sinon la plus proche
   const seanceChoisie = resultats.find((s) => s.id === choisie) ?? resultats[0]
 
-  // Les pastilles des choix cochés (sports, puis chaque groupe de la feuille)
+  // La liste des filtres cochés
   const coches = [
     ...filtres.sports.map((sport) => ({ cle: 'sports', valeur: sport, texte: nomCourt(sport) })),
     ...GROUPES.flatMap((g) => filtres[g.cle].map((v) => ({ cle: g.cle, valeur: v, texte: libelleChoix(g.cle, v) }))),
   ]
 
-  // Retire un choix coché (pastille sous « Où ? »)
+  // Enlève un filtre
   function retirer(cle, valeur) {
     setFiltres({ ...filtres, [cle]: filtres[cle].filter((v) => v !== valeur) })
   }
 
+  // Enlève la recherche et tous les filtres
   function toutEffacer() {
     setRecherche('')
     setEndroit('')
     setFiltres(FILTRES_VIDES)
   }
 
-  const quelqueChoseActif = cherche !== '' || lieu !== '' || coches.length > 0
-  const unSeulJour = filtres.jours.length === 1
+  const quelqueChoseActif = cherche !== '' || lieu !== '' || coches.length > 0 // true si une recherche ou un filtre est utilisé
+  const unSeulJour = filtres.jours.length === 1 // true si un seul jour est coché
+  // Phrase affichée quand il n'y a aucune séance
   const phraseVide = quelqueChoseActif
     ? phraseRien(filtres, cherche, lieu)
     : "Personne n'a encore proposé de séance. Lance la tienne"
 
   return (
     <main id="contenu" className="page theme">
+      {/* Titre et bouton des filtres */}
       <div className="seances__entete">
         <div>
           <h1 className="seances__titre">Séances</h1>
@@ -127,10 +131,12 @@ export default function Seances() {
         </button>
       </div>
 
+      {/* Fenêtre des filtres */}
       {feuilleOuverte && (
         <FeuilleFiltres filtres={filtres} setFiltres={setFiltres} nombre={resultats.length} onFermer={fermerFeuille} />
       )}
 
+      {/* Recherche par sport et par lieu */}
       <div className="seances__filtres">
         <label htmlFor="recherche" className="visuellement-cache">
           Quel sport ?
@@ -162,6 +168,7 @@ export default function Seances() {
               onChange={(e) => setEndroit(e.target.value)}
             />
           </div>
+          {/* Bouton pour passer de la liste à la carte */}
           <button
             type="button"
             className={vueCarte ? 'seances__bouton-carte seances__bouton-carte--actif' : 'seances__bouton-carte'}
@@ -173,7 +180,7 @@ export default function Seances() {
           </button>
         </div>
 
-        {/* Pastilles des choix cochés : toucher = retirer */}
+        {/* Les filtres cochés : un clic dessus les enlève */}
         {coches.length > 0 && (
           <div className="seances__pastilles" role="group" aria-label="Filtres cochés">
             {coches.map((c) => (
@@ -194,13 +201,14 @@ export default function Seances() {
         )}
       </div>
 
+      {/* Pendant le chargement */}
       {etat === 'chargement' && (
         <p role="status" className="seances__chargement">
           Chargement…
         </p>
       )}
 
-      {/* Chargement raté : les filtres restent au-dessus */}
+      {/* Si le chargement a échoué */}
       {etat === 'erreur' && (
         <section className="seances__etat">
           <div className="seances__etat-rond seances__etat-rond--erreur">
@@ -221,7 +229,7 @@ export default function Seances() {
 
       {etat === 'pret' && (
         <>
-          {/* Compteur annoncé à chaque changement (caché à l'écran s'il n'y a rien) */}
+          {/* Nombre de séances trouvées */}
           <p role="status" className={aucune ? 'visuellement-cache' : 'seances__compteur'}>
             {aucune ? (
               'Aucune séance ne correspond à ta recherche.'
@@ -234,12 +242,13 @@ export default function Seances() {
             )}
           </p>
 
+          {/* Les séances : sur la carte ou en liste */}
           {!aucune &&
             (vueCarte ? (
               <div className="seances__vue-carte">
                 <PlanSeances
                   seances={resultats}
-                  centre={[48.857, 2.38]} /* Est parisien : toutes les séances de Paris sont visibles */
+                  centre={[48.857, 2.38]} /* La carte est centrée sur Paris */
                   zoom={12}
                   choisie={seanceChoisie.id}
                   onChoisir={setChoisie}
@@ -256,7 +265,7 @@ export default function Seances() {
               </ul>
             ))}
 
-          {/* Aucun résultat : élargir, proposer sa séance, ou être prévenu */}
+          {/* Si aucune séance n'est trouvée */}
           {aucune && (
             <>
               <section className="seances__etat">
@@ -284,6 +293,7 @@ export default function Seances() {
                 </div>
               </section>
 
+              {/* Bouton pour être prévenu quand une séance correspond */}
               <button
                 type="button"
                 className="seances__alerte"

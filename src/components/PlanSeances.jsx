@@ -16,8 +16,9 @@ const repereMoi = divIcon({ className: '', html: '<span class="repere-moi"></spa
 
 // Plan OpenStreetMap des séances (page Séances) : toucher un repère choisit la séance
 export default function PlanSeances({ seances, centre, zoom, choisie, onChoisir }) {
+  // role et aria-label : le lecteur d'écran annonce « Carte des séances »
   return (
-    <div className="plan">
+    <div className="plan" role="region" aria-label="Carte des séances">
       {/* touchZoom écrit en dur : par défaut, Leaflet ne l'active que sur les écrans tactiles */}
       <MapContainer center={centre} zoom={zoom} className="plan__carte" touchZoom scrollWheelZoom={false}>
         <TileLayer
